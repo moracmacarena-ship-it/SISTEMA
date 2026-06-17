@@ -1,0 +1,2115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Casa Yagüe · Sistema Central</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root{--vino:#7B2D42;--vm:#A8485E;--vc:#F5E6EA;--vp:#FBF3F5;--verde:#2D5A1B;--vem:#4A8A2C;--vec:#E8F5E0;--az:#1F3A5F;--azm:#2E6099;--azc:#E3EEF9;--tierra:#6B4226;--tc:#F5EDE6;--amb:#B8860B;--amc:#FDF6DC;--g1:#1A1A1A;--g2:#3D3D3D;--g3:#7A7A7A;--g4:#C8C8C8;--g5:#F0F0F0;--bg:#F7F5F2;--borde:#E2DDD8;--sh:0 1px 4px rgba(0,0,0,.08);--r:10px;--rs:6px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Georgia',serif;background:var(--bg);color:var(--g1);min-height:100vh}
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:220px;background:var(--vino);display:flex;flex-direction:column;z-index:100;overflow-y:auto;transition:transform .25s}
+.sb-brand{padding:18px 20px 14px;border-bottom:1px solid rgba(255,255,255,.12)}
+.sb-brand .logo{font-size:20px;margin-bottom:3px}
+.sb-brand h1{font-size:14px;color:#fff;font-weight:400}
+.sb-brand p{font-size:10px;color:rgba(255,255,255,.5);font-family:sans-serif}
+.sb-brand .season{font-size:9px;color:rgba(255,255,255,.35);font-family:sans-serif;border-top:1px solid rgba(255,255,255,.1);padding-top:5px;margin-top:6px}
+.nav-sec{font-size:9px;font-family:sans-serif;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);padding:12px 20px 4px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 20px;color:rgba(255,255,255,.65);font-size:12px;font-family:sans-serif;cursor:pointer;border-left:3px solid transparent;transition:all .15s}
+.nav-item:hover{color:#fff;background:rgba(255,255,255,.08)}
+.nav-item.active{color:#fff;background:rgba(255,255,255,.14);border-left-color:#fff}
+.nav-item .ic{width:16px;text-align:center;font-size:12px}
+.nav-item .bx{margin-left:auto;background:#E8B4B8;color:var(--vino);font-size:9px;padding:1px 5px;border-radius:99px;font-weight:700}
+.sb-footer{margin-top:auto;padding:12px 20px;border-top:1px solid rgba(255,255,255,.1)}
+.u-info{display:flex;align-items:center;gap:8px}
+.u-av{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;font-family:sans-serif;font-weight:500}
+.u-name{font-size:11px;color:rgba(255,255,255,.75);font-family:sans-serif}
+.u-role{font-size:9px;color:rgba(255,255,255,.4);font-family:sans-serif}
+.main{margin-left:220px;min-height:100vh;display:flex;flex-direction:column}
+.topbar{background:#fff;border-bottom:1px solid var(--borde);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:var(--sh)}
+.tb-title{font-size:15px;font-weight:400}
+.tb-right{display:flex;align-items:center;gap:8px}
+.btn{font-family:sans-serif;font-size:12px;padding:6px 13px;border-radius:var(--rs);border:1px solid var(--borde);background:#fff;color:var(--g1);cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .15s}
+.btn:hover{background:var(--g5)}
+.btn.primary{background:var(--vino);color:#fff;border-color:var(--vino)}
+.btn.primary:hover{background:var(--vm)}
+.btn.success{background:var(--verde);color:#fff;border-color:var(--verde)}
+.btn.danger{color:#C00000;border-color:#F5C0C0}
+.btn.danger:hover{background:#FFF0F0}
+.btn.sm{font-size:11px;padding:4px 9px}
+.btn.xs{font-size:10px;padding:3px 7px}
+.hamburger{display:none;background:none;border:none;font-size:18px;cursor:pointer;color:var(--g2)}
+.content{padding:20px;flex:1}
+.page{display:none}.page.active{display:block}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:#fff;border:1px solid var(--borde);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.ch{padding:12px 16px;border-bottom:1px solid var(--borde);display:flex;align-items:center;justify-content:space-between}
+.ch h3{font-size:12px;font-weight:400;font-family:sans-serif;color:var(--g2);display:flex;align-items:center;gap:6px}
+.cb{padding:14px 16px}
+.kpi{background:#fff;border:1px solid var(--borde);border-radius:var(--r);padding:16px 18px;box-shadow:var(--sh)}
+.kpi .kl{font-size:10px;font-family:sans-serif;color:var(--g3);margin-bottom:5px;display:flex;align-items:center;gap:5px}
+.kpi .kv{font-size:24px;font-weight:400;line-height:1}
+.kpi .ks{font-size:10px;font-family:sans-serif;color:var(--g3);margin-top:3px}
+.kpi.danger .kv{color:#C00000}.kpi.warn .kv{color:var(--amb)}.kpi.ok .kv{color:var(--verde)}.kpi.vino .kv{color:var(--vino)}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-family:sans-serif;font-size:12px}
+thead th{padding:8px 10px;background:var(--g5);color:var(--g3);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;text-align:left;border-bottom:1px solid var(--borde);white-space:nowrap}
+tbody td{padding:9px 10px;border-bottom:1px solid var(--borde);color:var(--g1);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--bg)}
+.tag{display:inline-block;font-size:10px;font-family:sans-serif;padding:2px 7px;border-radius:99px;font-weight:500;white-space:nowrap}
+.t-ok{background:var(--vec);color:var(--verde)}.t-warn{background:var(--amc);color:var(--amb)}.t-danger{background:#FFE5E5;color:#C00000}.t-info{background:var(--azc);color:var(--az)}.t-gray{background:var(--g5);color:var(--g3)}.t-vino{background:var(--vc);color:var(--vino)}.t-tierra{background:var(--tc);color:var(--tierra)}
+.field{display:flex;flex-direction:column;gap:3px}
+.field label{font-size:10px;font-family:sans-serif;font-weight:600;color:var(--g3);text-transform:uppercase;letter-spacing:.04em}
+.field input,.field select,.field textarea{padding:7px 9px;border:1px solid var(--borde);border-radius:var(--rs);background:#fff;color:var(--g1);font-size:12px;font-family:sans-serif;outline:none;transition:border-color .15s;width:100%}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--vino)}
+.field textarea{resize:vertical;min-height:60px}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ff{grid-column:1/-1}
+.fs{font-size:10px;font-family:sans-serif;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--g3);padding:8px 0 3px;border-top:1px solid var(--borde);margin-top:4px;grid-column:1/-1}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;align-items:center;justify-content:center;padding:16px}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:var(--r);max-width:540px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.18)}
+.mh{padding:16px 20px;border-bottom:1px solid var(--borde);display:flex;align-items:center;justify-content:space-between}
+.mh h2{font-size:15px;font-weight:400}
+.mc{padding:18px 20px}
+.mf{padding:12px 20px;border-top:1px solid var(--borde);display:flex;justify-content:flex-end;gap:8px}
+.mc-close{background:none;border:none;font-size:18px;cursor:pointer;color:var(--g3)}
+.mb8{margin-bottom:8px}.mb12{margin-bottom:12px}.mb16{margin-bottom:16px}.mb20{margin-bottom:20px}
+.sec-t{font-size:10px;font-family:sans-serif;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--g3);margin-bottom:10px}
+.alert{padding:9px 13px;border-radius:var(--rs);font-family:sans-serif;font-size:12px;margin-bottom:12px;display:flex;align-items:center;gap:7px}
+.alert.danger{background:#FFF0F0;border-left:3px solid #C00000;color:#800000}
+.alert.warn{background:var(--amc);border-left:3px solid var(--amb);color:var(--tierra)}
+.alert.ok{background:var(--vec);border-left:3px solid var(--verde);color:var(--verde)}
+#toast{position:fixed;bottom:20px;right:20px;background:var(--g1);color:#fff;font-family:sans-serif;font-size:12px;padding:9px 16px;border-radius:var(--rs);opacity:0;pointer-events:none;transition:opacity .2s;z-index:999}
+#toast.show{opacity:1}
+/* FRONT DESK */
+.fd-wrap{overflow-x:auto;border:1px solid var(--borde);border-radius:var(--r)}
+.fd-header{display:flex;background:var(--vino)}
+.fd-house-h{width:130px;flex-shrink:0;padding:8px 12px;color:rgba(255,255,255,.7);font-size:10px;font-family:sans-serif;font-weight:600;text-transform:uppercase;border-right:1px solid rgba(255,255,255,.2)}
+.fd-day-h{flex:1;min-width:38px;text-align:center;padding:6px 2px;color:#fff;font-size:10px;font-family:sans-serif;font-weight:500;border-right:1px solid rgba(255,255,255,.15)}
+.fd-day-h.today{background:rgba(255,255,200,.2)}
+.fd-row{display:flex;min-height:54px;border-bottom:1px solid var(--borde)}
+.fd-row:last-child{border-bottom:none}
+.fd-house{width:130px;flex-shrink:0;padding:8px 12px;border-right:1px solid var(--borde);font-family:sans-serif;font-size:11px;font-weight:600;color:var(--g2);display:flex;align-items:center}
+.fd-days{flex:1;display:flex;position:relative}
+.fd-cell{flex:1;min-width:38px;border-right:1px solid var(--borde);position:relative;min-height:54px}
+.fd-cell.today{background:#FDF6DC}
+.fd-cell.weekend{background:#F9F7F5}
+.fd-block{position:absolute;top:7px;height:38px;border-radius:4px;display:flex;align-items:center;padding:0 7px;font-family:sans-serif;font-size:10px;font-weight:500;color:#fff;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;cursor:pointer;z-index:2;transition:filter .15s}
+.fd-block:hover{filter:brightness(1.12)}
+.bar-item{margin-bottom:8px}
+.bar-label{display:flex;justify-content:space-between;font-size:11px;font-family:sans-serif;margin-bottom:3px}
+.bar-track{height:7px;background:var(--g5);border-radius:99px;overflow:hidden}
+.bar-fill{height:100%;border-radius:99px}
+/* CLUB */
+.cv-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.cv-filters input,.cv-filters select{padding:6px 9px;border:1px solid var(--borde);border-radius:var(--rs);font-family:sans-serif;font-size:12px;outline:none}
+/* PERSONAL */
+.pers-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.pers-card{background:#fff;border:1px solid var(--borde);border-radius:var(--r);overflow:hidden}
+.pers-head{padding:12px 16px;border-bottom:1px solid var(--borde);display:flex;align-items:center;gap:10px}
+.pers-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:sans-serif;font-size:13px;font-weight:600;color:#fff;flex-shrink:0}
+.pers-name{font-family:sans-serif;font-size:13px;font-weight:500}
+.pers-role{font-family:sans-serif;font-size:11px;color:var(--g3)}
+.pers-body{padding:12px 16px}
+.franco-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.fc{font-size:10px;font-family:sans-serif;padding:2px 8px;border-radius:99px;border:1px solid var(--borde);color:var(--g2)}
+.fc.vac{background:var(--amc);border-color:var(--amb);color:var(--amb)}
+.fc.med{background:var(--vec);border-color:var(--verde);color:var(--verde)}
+/* VINOS */
+.vi-inp{padding:3px 6px;border:1px solid var(--borde);border-radius:3px;font-size:11px;font-family:sans-serif;background:#fff;outline:none;width:100%}
+.vi-inp:focus{border-color:var(--vino)}
+/* GASTOS */
+.gcat-btn{font-size:11px;font-family:sans-serif;padding:5px 12px;border-radius:99px;border:1px solid var(--borde);background:#fff;color:var(--g2);cursor:pointer;transition:all .15s}
+.gcat-btn.active,.gcat-btn:hover{background:var(--vino);color:#fff;border-color:var(--vino)}
+/* INVENTARIO */
+.inv-sec{margin-bottom:18px}
+.inv-sec h3{font-family:sans-serif;font-size:12px;font-weight:600;color:var(--g2);margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--borde)}
+.inv-item{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--g5);font-family:sans-serif;font-size:12px}
+.inv-item:last-child{border-bottom:none}
+/* REGLAS */
+.reg-item{display:flex;gap:8px;padding:7px 0;border-bottom:1px solid var(--g5);font-family:sans-serif;font-size:12px;align-items:flex-start}
+.reg-item:last-child{border-bottom:none}
+.reg-num{width:22px;height:22px;border-radius:50%;background:var(--vc);color:var(--vino);font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.reg-txt{flex:1;color:var(--g2);line-height:1.5}
+@media(max-width:900px){
+.sidebar{transform:translateX(-220px)}.sidebar.open{transform:translateX(0)}
+.main{margin-left:0}.hamburger{display:block}
+.g4,.g3,.g2{grid-template-columns:1fr}
+.fg{grid-template-columns:1fr}.ff{grid-column:1}
+.pers-grid{grid-template-columns:1fr}}
+
+.sync-btn{font-family:sans-serif;font-size:12px;padding:6px 14px;border-radius:var(--rs);border:1px solid var(--borde);background:#fff;color:var(--g2);cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .2s}
+.sync-btn:hover{background:var(--g5)}
+.sync-btn.syncing{color:var(--amb);border-color:var(--amb);background:var(--amc)}
+.sync-btn.ok{color:var(--verde);border-color:var(--verde);background:var(--vec)}
+.sync-btn.error{color:#C00000;border-color:#F5C0C0;background:#FFF0F0}
+</style>
+</head>
+<body>
+<aside class="sidebar" id="sidebar">
+<div class="sb-brand"><div class="logo">🍷</div><h1>Casa Yagüe</h1><p>Trevelin · Patagonia</p><div class="season">Temporada 2026/2027</div></div>
+<div class="nav-sec">Principal</div>
+<div class="nav-item active" onclick="goto('inicio')"><span class="ic"><i class="fa fa-home"></i></span>Inicio</div>
+<div class="nav-sec">Alojamiento</div>
+<div class="nav-item" onclick="goto('frontdesk')"><span class="ic"><i class="fa fa-th"></i></span>Front Desk</div>
+<div class="nav-item" onclick="goto('reservas')"><span class="ic"><i class="fa fa-calendar"></i></span>Reservas</div>
+<div class="nav-item" onclick="goto('clientes')"><span class="ic"><i class="fa fa-users"></i></span>Clientes</div>
+<div class="nav-sec">Experiencias</div>
+<div class="nav-item" onclick="goto('visitas')"><span class="ic"><i class="fa fa-utensils"></i></span>Visitas / Almuerzos</div>
+<div class="nav-sec">Negocio</div>
+<div class="nav-item" onclick="goto('finanzas')"><span class="ic"><i class="fa fa-chart-line"></i></span>Finanzas</div>
+<div class="nav-item" onclick="goto('vinos')"><span class="ic"><i class="fa fa-wine-bottle"></i></span>Vinos</div>
+<div class="nav-item" onclick="goto('club')"><span class="ic"><i class="fa fa-star"></i></span>Club de vinos</div>
+<div class="nav-item" onclick="goto('ganaderia')"><span class="ic"><i class="fa fa-paw"></i></span>Ganadería</div>
+<div class="nav-sec">Casas</div>
+<div class="nav-item" onclick="goto('inventarios')"><span class="ic"><i class="fa fa-boxes"></i></span>Inventarios</div>
+<div class="nav-item" onclick="goto('reglas')"><span class="ic"><i class="fa fa-scroll"></i></span>Reglas</div>
+<div class="nav-sec">Personal</div>
+<div class="nav-item" onclick="goto('personal')"><span class="ic"><i class="fa fa-id-badge"></i></span>Personal</div>
+<div class="nav-sec">Herramientas</div>
+<div class="nav-item" onclick="goto('emails')"><span class="ic"><i class="fa fa-envelope"></i></span>Emails</div>
+
+<div class="sb-footer"><div class="u-info"><div class="u-av">MY</div><div><div class="u-name">Marcelo Yagüe</div><div class="u-role">Propietario · CEO</div></div></div></div>
+</aside>
+<div class="main">
+<div class="topbar">
+<div style="display:flex;align-items:center;gap:10px">
+<button class="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')"><i class="fa fa-bars"></i></button>
+<span class="tb-title" id="ptitle">Inicio</span>
+</div>
+<div class="tb-right">
+<button class="sync-btn" id="sync-btn" onclick="syncToSheets()" title="Guardar en Google Sheets">☁ Sincronizar</button>
+<button class="btn" onclick="loadFromSheets()" title="Cargar desde Google Sheets" style="font-size:11px;padding:5px 9px">↓ Cargar Sheets</button>
+<button class="btn" onclick="goto('reservas');openM('m-res')"><i class="fa fa-plus"></i>Reserva</button>
+
+</div>
+</div>
+<div class="content">
+<!-- INICIO -->
+<div id="page-inicio" class="page active">
+<div class="alert danger mb16"><i class="fa fa-triangle-exclamation"></i><strong>USD 12.273</strong> pendientes · 8 huéspedes con saldo</div>
+<div class="g4 mb16">
+<div class="kpi warn"><div class="kl"><i class="fa fa-home"></i>Ocupación</div><div class="kv">64%</div><div class="ks">44 noches · meta 80%</div></div>
+<div class="kpi danger"><div class="kl"><i class="fa fa-circle-exclamation"></i>Pendiente cobro</div><div class="kv">USD 12.273</div><div class="ks">8 saldos abiertos</div></div>
+<div class="kpi ok"><div class="kl"><i class="fa fa-calendar-check"></i>Reservas</div><div class="kv">12</div><div class="ks">Oct 2026 — Feb 2027</div></div>
+<div class="kpi vino"><div class="kl"><i class="fa fa-star"></i>Club vinos</div><div class="kv">700+</div><div class="ks">contactos</div></div>
+</div>
+<div class="g3 mb16">
+<div class="card" style="grid-column:span 2">
+<div class="ch"><h3><i class="fa fa-th" style="color:var(--azm)"></i>Front Desk — próximas llegadas</h3><button class="btn sm" onclick="goto('frontdesk')">Ver completo</button></div>
+<div class="tw"><table><thead><tr><th>Cliente</th><th>Casa</th><th>Check-in</th><th>Noches</th><th>Estado</th><th>Saldo</th><th></th></tr></thead><tbody id="tb-inicio-res"></tbody></table></div>
+</div>
+<div class="card">
+<div class="ch"><h3><i class="fa fa-bolt" style="color:var(--amb)"></i>Acciones rápidas</h3></div>
+<div class="cb" style="display:flex;flex-direction:column;gap:7px">
+<button class="btn" style="justify-content:flex-start" onclick="goto('frontdesk')"><i class="fa fa-th"></i>Front Desk</button>
+<button class="btn" style="justify-content:flex-start" onclick="goto('reservas');openM('m-res')"><i class="fa fa-plus"></i>Nueva reserva</button>
+<button class="btn" style="justify-content:flex-start" onclick="goto('visitas');openM('m-vis')"><i class="fa fa-utensils"></i>Nuevo almuerzo/visita</button>
+<button class="btn" style="justify-content:flex-start" onclick="goto('gastos');openM('m-gasto')"><i class="fa fa-receipt"></i>Registrar gasto</button>
+<button class="btn" style="justify-content:flex-start" onclick="goto('club')"><i class="fa fa-star"></i>Club de vinos</button>
+<button class="btn" style="justify-content:flex-start" onclick="goto('personal')"><i class="fa fa-id-badge"></i>Personal</button>
+</div>
+</div>
+</div>
+<div class="g2">
+<div class="card"><div class="ch"><h3><i class="fa fa-chart-bar" style="color:var(--verde)"></i>Ocupación por casa</h3></div><div class="cb" id="inicio-ocu"></div></div>
+<div class="card"><div class="ch"><h3><i class="fa fa-triangle-exclamation" style="color:#C00000"></i>Saldos urgentes</h3></div><div class="tw"><table><thead><tr><th>Cliente</th><th>Casa</th><th>Saldo</th><th></th></tr></thead><tbody id="tb-inicio-saldos"></tbody></table></div></div>
+</div>
+</div>
+
+<!-- FRONT DESK -->
+<div id="page-frontdesk" class="page">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+<div style="display:flex;align-items:center;gap:8px">
+<button class="btn" onclick="fdPrev()"><i class="fa fa-chevron-left"></i></button>
+<span id="fd-label" style="font-size:14px;font-weight:500;font-family:sans-serif;min-width:180px;text-align:center"></span>
+<button class="btn" onclick="fdNext()"><i class="fa fa-chevron-right"></i></button>
+</div>
+<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+<button class="btn sm" id="btn-vg" onclick="setFdV('grid')">Grilla</button>
+<button class="btn sm" id="btn-vl" onclick="setFdV('list')">Lista</button>
+<button class="btn sm primary" onclick="openM('m-res')"><i class="fa fa-plus"></i>Nueva reserva</button>
+</div>
+</div>
+<div id="fd-grid-v">
+<div class="fd-wrap">
+<div class="fd-header" id="fd-hdr" style="display:flex"></div>
+<div id="fd-body"></div>
+</div>
+<div style="display:flex;gap:10px;margin-top:9px;font-family:sans-serif;font-size:11px;color:var(--g3);flex-wrap:wrap">
+<span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#7B2D42;margin-right:4px;vertical-align:middle"></span>Casa Bodega</span>
+<span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1F4E79;margin-right:4px;vertical-align:middle"></span>Casa Deck</span>
+<span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#2D5A1B;margin-right:4px;vertical-align:middle"></span>Casa Huerta</span>
+<span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#6B4226;margin-right:4px;vertical-align:middle"></span>Suite Huerta</span>
+<span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#4A4078;margin-right:4px;vertical-align:middle"></span>Casa Principal</span>
+<span style="color:var(--g4)">|</span><span>Opacidad reducida = saldo pendiente</span>
+</div>
+</div>
+<div id="fd-list-v" style="display:none">
+<div class="card"><div class="tw"><table><thead><tr><th>Cliente</th><th>Casa</th><th>Check-in</th><th>Check-out</th><th>Nts</th><th>Pax</th><th>USD</th><th>Cobrado</th><th>Saldo</th><th>Cuenta</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="tb-fd-list"></tbody></table></div></div>
+</div>
+</div>
+
+<!-- RESERVAS -->
+<div id="page-reservas" class="page">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+<div style="display:flex;gap:7px;flex-wrap:wrap">
+<input id="s-res" placeholder="Buscar..." style="padding:6px 10px;border:1px solid var(--borde);border-radius:var(--rs);font-family:sans-serif;font-size:12px;outline:none;width:190px" oninput="renderReservas()">
+<select id="f-rest" style="padding:6px 9px;border:1px solid var(--borde);border-radius:var(--rs);font-family:sans-serif;font-size:12px" onchange="renderReservas()"><option value="">Todos los estados</option><option>Cobrado</option><option>Pendiente</option><option>Al check-in</option></select>
+<select id="f-resc" style="padding:6px 9px;border:1px solid var(--borde);border-radius:var(--rs);font-family:sans-serif;font-size:12px" onchange="renderReservas()"><option value="">Todas las casas</option><option>Casa Bodega</option><option>Casa Deck</option><option>Casa Huerta</option><option>Suite Huerta</option><option>Casa Principal</option></select>
+</div>
+<button class="btn primary" onclick="openM('m-res')"><i class="fa fa-plus"></i>Nueva reserva</button>
+</div>
+<div class="card"><div class="tw"><table><thead><tr><th>Cliente</th><th>Casa</th><th>Check-in</th><th>Check-out</th><th>Nts</th><th>Pax</th><th>Total</th><th>Cobrado</th><th>Saldo</th><th>Cuenta</th><th>Estado</th><th>Origen</th><th>Notas</th><th>Acciones</th></tr></thead><tbody id="tb-res"></tbody></table></div></div>
+</div>
+
+<!-- CLIENTES -->
+<div id="page-clientes" class="page">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+<input id="s-cli" placeholder="Buscar cliente..." style="padding:6px 10px;border:1px solid var(--borde);border-radius:var(--rs);font-family:sans-serif;font-size:12px;outline:none;width:240px" oninput="renderClientes()">
+<button class="btn primary" onclick="openM('m-cli')"><i class="fa fa-plus"></i>Nuevo cliente</button>
+</div>
+<div class="card"><div class="tw"><table><thead><tr><th>Nombre</th><th>Email</th><th>Teléfono</th><th>Ciudad</th><th>Origen</th><th>Visitas</th><th>Última</th><th>Notas</th><th></th></tr></thead><tbody id="tb-cli"></tbody></table></div></div>
+</div>
+
+<!-- VISITAS -->
+<div id="page-visitas" class="page">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+<span class="sec-t" style="margin:0">Visitas guiadas y almuerzos de maridaje</span>
+<button class="btn primary" onclick="openM('m-vis')"><i class="fa fa-plus"></i>Nuevo booking</button>
+</div>
+<div class="card"><div class="tw"><table><thead><tr><th>Fecha</th><th>Tipo</th><th>Cliente</th><th>Pax</th><th>Horario</th><th>Total</th><th>Cobrado</th><th>Estado</th><th>Notas</th><th></th></tr></thead><tbody id="tb-vis"></tbody></table></div></div>
+</div>
+
+<!-- FINANZAS -->
+<div id="page-finanzas" class="page">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+<div style="display:flex;gap:7px;flex-wrap:wrap">
+<button class="btn" style="background:#EAF3DE;color:#27500A;border-color:#C0DD97" onclick="openM('m-fin-ing')"><i class="fa fa-plus"></i> Ingreso</button>
+<button class="btn" style="background:#FCEBEB;color:#791F1F;border-color:#F7C1C1" onclick="openM('m-fin-egr')"><i class="fa fa-minus"></i> Egreso</button>
+</div>
+<div style="display:flex;gap:7px;align-items:center">
+<label style="font-size:12px;font-family:sans-serif;color:var(--g3)">Moneda:</label>
+<select id="fin-mon" onchange="renderFinanzas()" style="padding:5px 9px;border:1px solid var(--borde);border-radius:var(--rs);font-family:sans-serif;font-size:12px">
+<option value="ARS">ARS</option><option value="USD">USD</option>
+</select>
+<label style="font-size:12px;font-family:sans-serif;color:var(--g3)">Mes:</label>
+<select id="fin-mes" onchange="renderFinanzas()" style="padding:5px 9px;border:1px solid var(--borde);border-radius:var(--rs);font-family:sans-serif;font-size:12px">
+<option value="">Todo el año</option>
+</select>
+</div>
+</div>
+<div class="g4 mb12" id="fin-kpis"></div>
+<div class="g2 mb12">
+<div class="card">
+<div class="ch"><h3><i class="fa fa-chart-bar" style="color:#27500A"></i>Ingresos por fuente</h3></div>
+<div style="padding:14px 16px"><canvas id="chart-ing" height="200"></canvas></div>
+</div>
+<div class="card">
+<div class="ch"><h3><i class="fa fa-chart-bar" style="color:#791F1F"></i>Egresos por categoría</h3></div>
+<div style="padding:14px 16px"><canvas id="chart-egr" height="200"></canvas></div>
+</div>
+</div>
+<div class="card mb12">
+<div class="ch"><h3><i class="fa fa-chart-line"></i>Evolución mensual — ingresos vs egresos</h3></div>
+<div style="padding:14px 16px"><canvas id="chart-evol" height="140"></canvas></div>
+</div>
+<div class="card mb12"><div class="ch"><h3><i class="fa fa-table"></i>Flujo mensual detallado</h3></div><div class="tw"><table><thead><tr><th>Mes</th><th>Alojamiento</th><th>Visitas</th><th>Almuerzos</th><th>Vinos</th><th>Ganadería</th><th>Otro</th><th style="color:#27500A">INGRESOS</th><th style="color:#791F1F">EGRESOS</th><th>RESULTADO</th><th>MARGEN</th></tr></thead><tbody id="tb-flujo"></tbody></table></div></div>
+<div class="g2 mb12">
+<div class="card"><div class="ch"><h3><i class="fa fa-arrow-down" style="color:#27500A"></i>Registro de ingresos</h3><button class="btn sm" onclick="openM('m-fin-ing')">+ Agregar</button></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap;padding:10px 16px 0" id="fil-ing-meses"></div>
+<div class="tw"><table><thead><tr><th>Fecha</th><th>Fuente</th><th>Detalle</th><th>Sector</th><th>ARS</th><th>USD</th><th>Cuenta</th><th></th></tr></thead><tbody id="tb-ing"></tbody></table></div></div>
+<div class="card"><div class="ch"><h3><i class="fa fa-arrow-up" style="color:#791F1F"></i>Registro de egresos</h3><button class="btn sm" onclick="openM('m-fin-egr')">+ Agregar</button></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap;padding:10px 16px 0" id="fil-egr-meses"></div>
+<div class="tw"><table><thead><tr><th>Fecha</th><th>Categoría</th><th>Descripción</th><th>Sector</th><th>Área</th><th>ARS</th><th>USD</th><th></th></tr></thead><tbody id="tb-egr"></tbody></table></div></div>
+</div>
+<div class="card"><div class="ch"><h3><i class="fa fa-triangle-exclamation" style="color:#C00000"></i>Saldos pendientes de cobro</h3></div><div class="tw"><table><thead><tr><th>Cliente</th><th>Casa</th><th>Check-in</th><th>Total</th><th>Cobrado</th><th>SALDO</th><th>Cuenta</th></tr></thead><tbody id="tb-pend"></tbody></table></div></div>
+</div>
+
+<!-- VINOS -->
+<div id="page-vinos" class="page">
+<div class="alert warn mb12"><i class="fa fa-clock"></i>Editá directamente en la tabla — las celdas azules son el stock a completar cuando esté disponible</div>
+<div class="card"><div class="ch"><h3><i class="fa fa-wine-bottle" style="color:var(--vino)"></i>Inventario de vinos</h3><button class="btn sm primary" onclick="openM('m-vino')">+ Varietal</button></div><div class="tw"><table><thead><tr><th>#</th><th>Varietal</th><th>Año</th><th>Línea</th><th>Stock</th><th>Mín.</th><th>Costo USD</th><th>P.Directo</th><th>P.Sala</th><th>P.Expo</th><th>P.Cliente</th><th>Alerta</th><th></th></tr></thead><tbody id="tb-vinos"></tbody></table></div></div>
+</div>
+
+<!-- CLUB DE VINOS -->
+<div id="page-club" class="page">
+<div class="cv-filters">
+<input id="cv-q" placeholder="Buscar nombre, ciudad..." oninput="renderClub()" style="width:220px">
+<select id="cv-tipo" onchange="renderClub()"><option value="">Todos los tipos</option><option>Huésped</option><option>Almuerzo/ Cena</option><option>Visita</option></select>
+<select id="cv-pais" onchange="renderClub()"><option value="">Todos los países</option><option>Argentina</option><option>Brasil</option><option>Chile</option><option>Uruguay</option><option>España</option><option>Estados Unidos</option><option>Inglaterra</option><option>Francia</option><option>Alemania</option><option>Holanda</option><option>Bèlgica</option><option>Noruega</option><option>Rusia</option><option>Paraguay</option><option>Colombia</option><option>China</option><option>Australia</option><option>Turquía</option><option>Suecia</option><option>Suiza</option><option>Dinamarca</option><option>Reino Unido</option></select>
+<select id="cv-ciudad" onchange="renderClub()"><option value="">Todas las ciudades</option><option>Buenos Aires</option><option>Bariloche</option><option>Córdoba</option><option>Rosario</option><option>Esquel</option><option>Chubut</option><option>Mendoza</option><option>Santa Fe</option><option>Neuquen</option><option>Rio Negro</option></select>
+<button class="btn sm success" onclick="exportCV()"><i class="fa fa-download"></i>Exportar CSV</button>
+<button class="btn sm" onclick="copyTels()"><i class="fa fa-copy"></i>Copiar teléfonos</button>
+</div>
+<div id="cv-stats" style="font-family:sans-serif;font-size:12px;color:var(--g3);margin-bottom:10px;display:flex;gap:10px;flex-wrap:wrap"></div>
+<div class="card"><div class="tw"><table><thead><tr><th>#</th><th>Nombre</th><th>Ciudad / País</th><th>Teléfono</th><th>Email</th><th>Tipo</th><th>Notas</th></tr></thead><tbody id="tb-club"></tbody></table></div></div>
+</div>
+
+<!-- GANADERÍA -->
+<div id="page-ganaderia" class="page">
+<div class="g4 mb12" id="kpi-gan"></div>
+<div class="card mb12"><div class="ch"><h3><i class="fa fa-paw" style="color:var(--verde)"></i>Padrón del rodeo</h3><button class="btn sm primary" onclick="openM('m-ani')">+ Animal</button></div><div class="tw"><table><thead><tr><th>ID</th><th>Caravana</th><th>Categoría</th><th>Sexo</th><th>Nacimiento</th><th>Potrero</th><th>Peso kg</th><th>Sanidad</th><th>Estado</th><th></th></tr></thead><tbody id="tb-rodeo"></tbody></table></div></div>
+<div class="g2">
+<div class="card"><div class="ch"><h3><i class="fa fa-syringe" style="color:var(--azm)"></i>Sanidad</h3><button class="btn sm" onclick="openM('m-san')">+ Evento</button></div><div class="tw"><table><thead><tr><th>Fecha</th><th>Animal</th><th>Producto</th><th>Tipo</th><th>Próxima</th></tr></thead><tbody id="tb-san"></tbody></table></div></div>
+<div class="card"><div class="ch"><h3><i class="fa fa-baby" style="color:var(--verde)"></i>Pariciones</h3><button class="btn sm" onclick="openM('m-par')">+ Evento</button></div><div class="tw"><table><thead><tr><th>Fecha</th><th>Tipo</th><th>Madre</th><th>Cría</th><th>Peso</th></tr></thead><tbody id="tb-par"></tbody></table></div></div>
+</div>
+</div>
+
+<!-- INVENTARIOS -->
+<div id="page-inventarios" class="page">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+<select id="inv-sel" onchange="renderInv()" style="padding:7px 10px;border:1px solid var(--borde);border-radius:var(--rs);font-family:sans-serif;font-size:13px"><option value="bodega">Casa Bodega</option><option value="deck">Casa Deck</option><option value="huerta">Casa Huerta</option><option value="suite">Suite Huerta</option><option value="principal">Casa Principal</option></select>
+<div style="display:flex;gap:7px"><button class="btn sm" onclick="toggleInvEdit()" id="btn-inv-edit"><i class="fa fa-edit"></i>Editar</button><button class="btn sm primary" onclick="openM('m-inv-add')"><i class="fa fa-plus"></i>Agregar ítem</button></div>
+</div>
+<div id="inv-content"></div>
+</div>
+
+<!-- REGLAS -->
+<div id="page-reglas" class="page">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+<select id="reg-sel" onchange="renderReglas()" style="padding:7px 10px;border:1px solid var(--borde);border-radius:var(--rs);font-family:sans-serif;font-size:13px"><option value="general">Reglas generales</option><option value="bodega">Casa Bodega</option><option value="deck">Casa Deck</option><option value="huerta">Casa Huerta</option><option value="suite">Suite Huerta</option><option value="principal">Casa Principal</option></select>
+<button class="btn sm primary" onclick="openM('m-regla')"><i class="fa fa-plus"></i>Agregar regla</button>
+</div>
+<div id="reg-content"></div>
+</div>
+
+<!-- PERSONAL -->
+<div id="page-personal" class="page">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+<span class="sec-t" style="margin:0">Personal</span>
+<div style="display:flex;gap:7px">
+<button class="btn sm" onclick="openM('m-nuevo-dia')"><i class="fa fa-plus"></i> Cargar día</button>
+<button class="btn sm primary" onclick="openM('m-nuevo-emp-p')"><i class="fa fa-user-plus"></i> Agregar persona</button>
+</div>
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px" id="pers-tabs"></div>
+<div id="pers-content"></div>
+</div>
+
+<!-- EMAILS -->
+<div id="page-emails" class="page">
+<div class="g2">
+<div><div class="sec-t mb12">Templates</div><div id="tmpl-list" style="display:flex;flex-direction:column;gap:5px"></div></div>
+<div><div class="sec-t mb12">Editor</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:center;gap:8px;padding:7px 11px;border:1px solid var(--borde);border-radius:var(--rs)"><span style="font-size:11px;font-family:sans-serif;color:var(--g3);white-space:nowrap">Asunto:</span><input id="e-subj" style="flex:1;border:none;background:transparent;font-family:sans-serif;font-size:12px;outline:none"></div>
+<div style="display:flex;flex-wrap:wrap;gap:4px" id="e-vars"></div>
+<textarea id="e-body" style="border:1px solid var(--borde);border-radius:var(--rs);padding:10px;font-family:sans-serif;font-size:12px;line-height:1.7;resize:vertical;min-height:240px;outline:none"></textarea>
+<div style="display:flex;gap:7px"><button class="btn primary" onclick="copyEmail()"><i class="fa fa-copy"></i>Copiar</button><button class="btn" onclick="openGmail()"><i class="fa fa-envelope"></i>Gmail</button></div>
+</div></div>
+</div>
+</div>
+
+</div><!-- /content -->
+</div><!-- /main -->
+<!-- MODALES -->
+<div class="modal-bg" id="m-res"><div class="modal"><div class="mh"><h2>Reserva de alojamiento</h2><button class="mc-close" onclick="closeM('m-res')">×</button></div><div class="mc"><div class="fg">
+<div class="field ff"><label>Cliente *</label><input id="r-cli" list="dl-clientes" placeholder="Escribí o elegí del club de vinos..."></div>
+<div class="field"><label>Pax</label><input id="r-pax" type="number" value="2"></div>
+<div class="field"><label>Casa</label><select id="r-casa"><option>Casa Bodega</option><option>Casa Deck</option><option>Casa Huerta</option><option>Suite Huerta</option><option>Casa Principal</option></select></div>
+<div class="field"><label>Check-in</label><input id="r-ci" type="date"></div>
+<div class="field"><label>Check-out</label><input id="r-co" type="date"></div>
+<div class="field"><label>Total (USD)</label><input id="r-total" type="number"></div>
+<div class="field"><label>Cobrado</label><input id="r-cobrado" placeholder="Ej: ARS 500.000"></div>
+<div class="field"><label>Saldo</label><input id="r-saldo" placeholder="Ej: USD 300"></div>
+<div class="field"><label>Cuenta cobro</label><select id="r-cuenta"><option>Mercado Pago CY</option><option>Galicia USD MY</option><option>WISE MY</option><option>Banco Chubut</option><option>Efectivo</option><option>PENDIENTE</option></select></div>
+<div class="field"><label>Estado</label><select id="r-est"><option>Cobrado</option><option>Pendiente</option><option>Al check-in</option><option>Parcial</option></select></div>
+<div class="field"><label>Origen</label><select id="r-origen"><option>Directo</option><option>Tour operador</option><option>Airbnb</option><option>Booking</option><option>Instagram</option><option>Web</option></select></div>
+<div class="field ff"><label>Notas</label><textarea id="r-notas" rows="2"></textarea></div>
+</div></div><div class="mf"><button class="btn" onclick="closeM('m-res')">Cancelar</button><button class="btn primary" onclick="guardarRes()">Guardar</button></div></div></div>
+
+<div class="modal-bg" id="m-edit-res"><div class="modal"><div class="mh"><h2>Editar cobros — <span id="er-nombre"></span></h2><button class="mc-close" onclick="closeM('m-edit-res')">×</button></div><div class="mc"><div class="fg">
+<div class="field"><label>Total (USD)</label><input id="er-total" type="number"></div>
+<div class="field"><label>TC</label><input id="er-tc" type="number"></div>
+<div class="field"><label>Cobrado</label><input id="er-cobrado"></div>
+<div class="field"><label>Saldo</label><input id="er-saldo"></div>
+<div class="field"><label>Cuenta cobro</label><select id="er-cuenta"><option>Mercado Pago CY</option><option>Galicia USD MY</option><option>WISE MY</option><option>Banco Chubut</option><option>Efectivo</option><option>PENDIENTE</option></select></div>
+<div class="field"><label>Estado</label><select id="er-est"><option>Cobrado</option><option>Pendiente</option><option>Al check-in</option><option>Parcial</option></select></div>
+<div class="field ff"><label>Notas</label><textarea id="er-notas" rows="2"></textarea></div>
+</div></div><div class="mf"><button class="btn" onclick="closeM('m-edit-res')">Cancelar</button><button class="btn primary" onclick="guardarEditRes()">Guardar cambios</button></div></div></div>
+
+<div class="modal-bg" id="m-cli"><div class="modal"><div class="mh"><h2>Nuevo cliente</h2><button class="mc-close" onclick="closeM('m-cli')">×</button></div><div class="mc"><div class="fg">
+<div class="field ff"><label>Nombre *</label><input id="c-nom"></div>
+<div class="field"><label>Email</label><input id="c-em" type="email"></div>
+<div class="field"><label>Teléfono</label><input id="c-tel"></div>
+<div class="field"><label>Ciudad</label><input id="c-ciu"></div>
+<div class="field"><label>Origen</label><select id="c-ori"><option>Directo</option><option>Tour operador</option><option>Instagram</option><option>Web</option><option>Airbnb</option><option>Booking</option></select></div>
+<div class="field"><label>Empresa</label><input id="c-emp"></div>
+<div class="field ff"><label>Notas</label><textarea id="c-not" rows="2"></textarea></div>
+</div></div><div class="mf"><button class="btn" onclick="closeM('m-cli')">Cancelar</button><button class="btn primary" onclick="guardarCli()">Guardar</button></div></div></div>
+
+<div class="modal-bg" id="m-vis"><div class="modal"><div class="mh"><h2>Nuevo booking — Visita / Almuerzo</h2><button class="mc-close" onclick="closeM('m-vis')">×</button></div><div class="mc"><div class="fg">
+<div class="field ff"><label>Cliente *</label><input id="v-cli" list="dl-clientes" placeholder="Escribí o elegí del club de vinos..."></div>
+<div class="field"><label>Tipo</label><select id="v-tipo"><option>Almuerzo maridaje</option><option>Visita guiada</option><option>Visita + Almuerzo</option><option>Degustación</option><option>Sunset</option></select></div>
+<div class="field"><label>Pax</label><input id="v-pax" type="number" value="2"></div>
+<div class="field"><label>Fecha</label><input id="v-fecha" type="date"></div>
+<div class="field"><label>Horario</label><input id="v-hora" placeholder="Ej: 13:00"></div>
+<div class="field"><label>Total</label><input id="v-total"></div>
+<div class="field"><label>Cobrado</label><input id="v-cob"></div>
+<div class="field"><label>Estado</label><select id="v-est"><option>Cobrado</option><option>Pendiente</option><option>SR</option><option>Señado</option></select></div>
+<div class="field ff"><label>Notas</label><textarea id="v-not" rows="2"></textarea></div>
+</div></div><div class="mf"><button class="btn" onclick="closeM('m-vis')">Cancelar</button><button class="btn primary" onclick="guardarVis()">Guardar</button></div></div></div>
+
+<div class="modal-bg" id="m-gasto"><div class="modal"><div class="mh"><h2>Registrar gasto</h2><button class="mc-close" onclick="closeM('m-gasto')">×</button></div><div class="mc"><div class="fg">
+<div class="field"><label>Fecha *</label><input id="g-fecha" type="date"></div>
+<div class="field"><label>Categoría</label><select id="g-cat"><option>Servicios</option><option>Insumos</option><option>Personal</option><option>Impuestos/OTA</option><option>Otro</option></select></div>
+<div class="field ff"><label>Descripción *</label><input id="g-desc"></div>
+<div class="field"><label>Área</label><select id="g-area"><option>General</option><option>Casa Bodega</option><option>Casa Deck</option><option>Casa Huerta</option><option>Suite Huerta</option><option>Casa Principal</option><option>Ganadería</option><option>Vinos</option></select></div>
+<div class="field"><label>Monto ARS</label><input id="g-ars" type="number"></div>
+<div class="field"><label>Monto USD</label><input id="g-usd" type="number"></div>
+<div class="field"><label>Nro. comprobante</label><input id="g-comp"></div>
+<div class="field ff"><label>Notas</label><textarea id="g-not" rows="2"></textarea></div>
+</div></div><div class="mf"><button class="btn" onclick="closeM('m-gasto')">Cancelar</button><button class="btn primary" onclick="guardarGasto()">Guardar</button></div></div></div>
+
+<div class="modal-bg" id="m-vino"><div class="modal"><div class="mh"><h2>Agregar varietal</h2><button class="mc-close" onclick="closeM('m-vino')">×</button></div><div class="mc"><div class="fg">
+<div class="field"><label>Varietal *</label><input id="vi-var"></div>
+<div class="field"><label>Año cosecha</label><input id="vi-anio" type="number"></div>
+<div class="field"><label>Línea</label><input id="vi-linea"></div>
+<div class="field"><label>Stock (botellas)</label><input id="vi-stock" type="number" value="0"></div>
+<div class="field"><label>Stock mínimo</label><input id="vi-min" type="number" value="6"></div>
+<div class="field"><label>Costo USD</label><input id="vi-costo" type="number"></div>
+<div class="field"><label>P. venta directo</label><input id="vi-pd" type="number"></div>
+<div class="field"><label>P. sala/copa</label><input id="vi-ps" type="number"></div>
+<div class="field"><label>P. expo</label><input id="vi-pe" type="number"></div>
+<div class="field"><label>P. cliente/club</label><input id="vi-pc" type="number"></div>
+<div class="field ff"><label>Notas</label><textarea id="vi-not" rows="2"></textarea></div>
+</div></div><div class="mf"><button class="btn" onclick="closeM('m-vino')">Cancelar</button><button class="btn primary" onclick="guardarVino()">Guardar</button></div></div></div>
+
+<div class="modal-bg" id="m-ani"><div class="modal"><div class="mh"><h2>Agregar animal</h2><button class="mc-close" onclick="closeM('m-ani')">×</button></div><div class="mc"><div class="fg">
+<div class="field"><label>Caravana SENASA *</label><input id="a-car"></div>
+<div class="field"><label>Categoría</label><select id="a-cat"><option>Vaca</option><option>Toro</option><option>Vaquillona</option><option>Novillo</option><option>Ternero</option><option>Ternera</option></select></div>
+<div class="field"><label>Sexo</label><select id="a-sex"><option>Hembra</option><option>Macho</option></select></div>
+<div class="field"><label>Nacimiento</label><input id="a-nac" type="date"></div>
+<div class="field"><label>Raza</label><input id="a-raza"></div>
+<div class="field"><label>Potrero</label><input id="a-pot"></div>
+<div class="field"><label>Peso (kg)</label><input id="a-peso" type="number"></div>
+<div class="field"><label>Estado san.</label><select id="a-san"><option>Al día</option><option>Pendiente</option><option>En tratamiento</option></select></div>
+<div class="field ff"><label>Notas</label><textarea id="a-not" rows="2"></textarea></div>
+</div></div><div class="mf"><button class="btn" onclick="closeM('m-ani')">Cancelar</button><button class="btn primary" onclick="guardarAni()">Agregar</button></div></div></div>
+
+<div class="modal-bg" id="m-san"><div class="modal"><div class="mh"><h2>Evento sanitario</h2><button class="mc-close" onclick="closeM('m-san')">×</button></div><div class="mc"><div class="fg">
+<div class="field"><label>Fecha</label><input id="s-fecha" type="date"></div>
+<div class="field"><label>Animal (caravana/ID)</label><input id="s-ani"></div>
+<div class="field"><label>Producto</label><input id="s-prod"></div>
+<div class="field"><label>Tipo</label><select id="s-tipo"><option>Vacuna</option><option>Antiparasitario</option><option>Antibiótico</option><option>Vitamina</option><option>Otro</option></select></div>
+<div class="field"><label>Próxima aplicación</label><input id="s-prox" type="date"></div>
+<div class="field"><label>Costo (ARS)</label><input id="s-costo" type="number"></div>
+</div></div><div class="mf"><button class="btn" onclick="closeM('m-san')">Cancelar</button><button class="btn primary" onclick="guardarSan()">Guardar</button></div></div></div>
+
+<div class="modal-bg" id="m-par"><div class="modal"><div class="mh"><h2>Parición / Destete</h2><button class="mc-close" onclick="closeM('m-par')">×</button></div><div class="mc"><div class="fg">
+<div class="field"><label>Fecha</label><input id="pa-fecha" type="date"></div>
+<div class="field"><label>Tipo</label><select id="pa-tipo"><option>Parición</option><option>Destete</option></select></div>
+<div class="field"><label>Madre (caravana/ID)</label><input id="pa-madre"></div>
+<div class="field"><label>Sexo cría</label><select id="pa-sex"><option>Ternero (macho)</option><option>Ternera (hembra)</option></select></div>
+<div class="field"><label>Peso al nacer (kg)</label><input id="pa-peso" type="number"></div>
+<div class="field ff"><label>Observaciones</label><textarea id="pa-obs" rows="2"></textarea></div>
+</div></div><div class="mf"><button class="btn" onclick="closeM('m-par')">Cancelar</button><button class="btn primary" onclick="guardarPar()">Guardar</button></div></div></div>
+
+<div class="modal-bg" id="m-franco"><div class="modal"><div class="mh"><h2>Registrar franco / vacación</h2><button class="mc-close" onclick="closeM('m-franco')">×</button></div><div class="mc"><div class="fg">
+<div class="field"><label>Empleado</label><select id="f-emp"><option>Elba Leufuman</option><option>Macarena Mora</option><option>Marcia Martinez</option><option>Jessica Martinez</option></select></div>
+<div class="field"><label>Tipo</label><select id="f-tipo"><option>Franco</option><option>Vacaciones</option><option>Medio día</option><option>Licencia</option></select></div>
+<div class="field"><label>Fecha desde</label><input id="f-desde" type="date"></div>
+<div class="field"><label>Fecha hasta (si aplica)</label><input id="f-hasta" type="date"></div>
+<div class="field ff"><label>Notas</label><input id="f-not"></div>
+</div></div><div class="mf"><button class="btn" onclick="closeM('m-franco')">Cancelar</button><button class="btn primary" onclick="guardarFranco()">Guardar</button></div></div></div>
+
+<div class="modal-bg" id="m-inv-add"><div class="modal"><div class="mh"><h2>Agregar ítem al inventario</h2><button class="mc-close" onclick="closeM('m-inv-add')">×</button></div><div class="mc"><div class="fg">
+<div class="field"><label>Casa</label><select id="ii-casa"><option value="bodega">Casa Bodega</option><option value="deck">Casa Deck</option><option value="huerta">Casa Huerta</option><option value="suite">Suite Huerta</option><option value="principal">Casa Principal</option></select></div>
+<div class="field"><label>Sección</label><input id="ii-sec" placeholder="Ej: Cocina, Habitación"></div>
+<div class="field"><label>Cantidad</label><input id="ii-qty"></div>
+<div class="field ff"><label>Descripción *</label><input id="ii-desc"></div>
+</div></div><div class="mf"><button class="btn" onclick="closeM('m-inv-add')">Cancelar</button><button class="btn primary" onclick="guardarInvItem()">Agregar</button></div></div></div>
+
+<div class="modal-bg" id="m-regla"><div class="modal"><div class="mh"><h2>Agregar regla</h2><button class="mc-close" onclick="closeM('m-regla')">×</button></div><div class="mc"><div class="fg">
+<div class="field"><label>Casa</label><select id="rg-casa"><option value="general">General</option><option value="bodega">Casa Bodega</option><option value="deck">Casa Deck</option><option value="huerta">Casa Huerta</option><option value="suite">Suite Huerta</option><option value="principal">Casa Principal</option></select></div>
+<div class="field ff"><label>Regla *</label><textarea id="rg-text" rows="3"></textarea></div>
+</div></div><div class="mf"><button class="btn" onclick="closeM('m-regla')">Cancelar</button><button class="btn primary" onclick="guardarRegla()">Agregar</button></div></div></div>
+
+
+<!-- MODAL INGRESO -->
+<div class="modal-bg" id="m-fin-ing"><div class="modal">
+<div class="mh"><h2 style="color:#27500A"><i class="fa fa-arrow-down"></i> Registrar ingreso</h2><button class="mc-close" onclick="closeM('m-fin-ing')">×</button></div>
+<div class="mc"><div class="fg">
+<div class="field"><label>Fecha *</label><input type="date" id="fi-fecha"></div>
+<div class="field"><label>Fuente *</label><select id="fi-fuente"><option>Alojamiento</option><option>Visita guiada</option><option>Almuerzo maridaje</option><option>Venta de vinos</option><option>Ganadería</option><option>Otro</option></select></div>
+<div class="field"><label>Cliente / Detalle</label><input id="fi-det" placeholder="Ej: Eichelmann, María"></div>
+<div class="field"><label>Casa / Sector</label><select id="fi-sec"><option value="">General</option><option>Casa Bodega</option><option>Casa Deck</option><option>Casa Huerta</option><option>Suite Huerta</option><option>Casa Principal</option><option>Bodega / Vinos</option><option>Ganadería</option></select></div>
+<div class="field"><label>Monto ARS</label><input type="number" id="fi-ars" placeholder="0"></div>
+<div class="field"><label>Monto USD</label><input type="number" id="fi-usd" placeholder="0"></div>
+<div class="field"><label>TC</label><input type="number" id="fi-tc" placeholder="Ej: 1420"></div>
+<div class="field"><label>Cuenta</label><select id="fi-cuenta"><option value="">—</option><option>Mercado Pago CY</option><option>Galicia USD MY</option><option>WISE MY</option><option>Banco Chubut</option><option>Efectivo</option></select></div>
+<div class="field"><label>Comprobante</label><input id="fi-comp" placeholder="Nro. opcional"></div>
+<div class="field ff"><label>Notas</label><input id="fi-not"></div>
+</div></div>
+<div class="mf"><button class="btn" onclick="closeM('m-fin-ing')">Cancelar</button><button class="btn" style="background:#27500A;color:#fff;border-color:#27500A" onclick="guardarIng()"><i class="fa fa-check"></i> Guardar ingreso</button></div>
+</div></div>
+
+<!-- MODAL EGRESO -->
+<div class="modal-bg" id="m-fin-egr"><div class="modal">
+<div class="mh"><h2 style="color:#791F1F"><i class="fa fa-arrow-up"></i> Registrar egreso</h2><button class="mc-close" onclick="closeM('m-fin-egr')">×</button></div>
+<div class="mc"><div class="fg">
+<div class="field"><label>Fecha *</label><input type="date" id="fe-fecha"></div>
+<div class="field"><label>Categoría *</label><select id="fe-cat"><option>Personal / Sueldos</option><option>Insumos y limpieza</option><option>Insumos gastronómicos</option><option>Mantenimiento de casas</option><option>Reparación</option><option>Servicios (gas, luz, agua)</option><option>Comisiones OTA</option><option>Sanidad ganadería</option><option>Impuestos y cargas fiscales</option><option>Otro</option></select></div>
+<div class="field ff"><label>Descripción *</label><input id="fe-desc" placeholder="Ej: Sueldo Elba noviembre"></div>
+<div class="field"><label>Casa / Sector</label><select id="fe-sec"><option value="">General</option><option>Casa Bodega</option><option>Casa Deck</option><option>Casa Huerta</option><option>Suite Huerta</option><option>Casa Principal</option><option>Todas las casas</option><option>Bodega / Vinos</option><option>Ganadería</option><option>Administración</option></select></div><div class="field"><label>Área de negocio <span style="font-weight:400;opacity:.7">(opcional)</span></label><select id="fe-area"><option value="">— Sin especificar —</option><option>Vinos</option><option>Gastronomía</option><option>Visitas</option><option>Chacra</option><option>Expo</option><option>Bodega</option><option>Alojamiento</option><option>Almuerzos</option><option>Otro</option></select></div>
+<div class="field"><label>Monto ARS</label><input type="number" id="fe-ars" placeholder="0"></div>
+<div class="field"><label>Monto USD</label><input type="number" id="fe-usd" placeholder="0"></div>
+<div class="field"><label>TC</label><input type="number" id="fe-tc" placeholder="Ej: 1420"></div>
+<div class="field"><label>Proveedor</label><input id="fe-prov" placeholder="A quién se le paga"></div>
+<div class="field"><label>Comprobante</label><input id="fe-comp" placeholder="Factura, recibo..."></div>
+<div class="field ff"><label>Notas</label><input id="fe-not"></div>
+</div></div>
+<div class="mf"><button class="btn" onclick="closeM('m-fin-egr')">Cancelar</button><button class="btn" style="background:#791F1F;color:#fff;border-color:#791F1F" onclick="guardarEgr()"><i class="fa fa-check"></i> Guardar egreso</button></div>
+</div></div>
+
+<!-- MODAL: CARGAR DÍA PERSONAL -->
+<div class="modal-bg" id="m-nuevo-dia"><div class="modal">
+<div class="mh"><h2><i class="fa fa-calendar-plus"></i> Cargar día</h2><button class="mc-close" onclick="closeM('m-nuevo-dia')">×</button></div>
+<div class="mc"><div class="fg">
+<div class="field"><label>Empleado *</label><select id="nd-emp"></select></div>
+<div class="field"><label>Tipo *</label><select id="nd-tipo">
+<option value="Día trabajado">Día trabajado</option>
+<option value="Franco">Franco</option>
+<option value="Vacaciones">Vacaciones</option>
+<option value="Medio día trabajado">Medio día trabajado</option>
+<option value="Medio día libre">Medio día libre</option>
+<option value="Jornal">Jornal</option>
+<option value="Licencia">Licencia</option>
+<option value="Otro">Otro</option>
+</select></div>
+<div class="field"><label>Fecha *</label><input type="date" id="nd-fecha"></div>
+<div class="field"><label>Horas trabajadas</label><input type="number" id="nd-horas" placeholder="Ej: 8" min="0" max="24" step="0.5"></div>
+<div class="field"><label>Pago (ARS)</label><input type="number" id="nd-pago" placeholder="Ej: 15000"></div>
+<div class="field"><label>Casa / Área</label><select id="nd-casa">
+<option value="">General</option><option>Casa Bodega</option><option>Casa Deck</option>
+<option>Casa Huerta</option><option>Suite Huerta</option><option>Casa Principal</option>
+<option>Bodega / Vinos</option><option>Ganadería</option><option>Administración</option>
+</select></div>
+<div class="field"><label>Tarea</label><input type="text" id="nd-tarea" placeholder="Ej: Limpieza, Cocina..."></div>
+<div class="field ff"><label>Notas</label><input type="text" id="nd-notas"></div>
+</div></div>
+<div class="mf"><button class="btn" onclick="closeM('m-nuevo-dia')">Cancelar</button><button class="btn primary" onclick="guardarDiaPersonal()"><i class="fa fa-check"></i> Guardar</button></div>
+</div></div>
+
+<!-- MODAL: NUEVA PERSONA -->
+<div class="modal-bg" id="m-nuevo-emp-p"><div class="modal">
+<div class="mh"><h2><i class="fa fa-user-plus"></i> Agregar persona al equipo</h2><button class="mc-close" onclick="closeM('m-nuevo-emp-p')">×</button></div>
+<div class="mc"><div class="fg">
+<div class="field ff"><label>Nombre y apellido *</label><input type="text" id="np-nombre" placeholder="Ej: Ana García"></div>
+<div class="field"><label>Rol / Tarea habitual</label><input type="text" id="np-rol" placeholder="Ej: Limpieza, Jardinería..."></div>
+<div class="field"><label>Tipo</label><select id="np-tipoemp"><option>Empleado fijo</option><option>Jornalero / Eventual</option><option>Temporal (temporada)</option><option>Otro</option></select></div>
+<div class="field ff"><label>Color de identificación</label>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:5px" id="np-colors"></div>
+<input type="hidden" id="np-color" value="#1F6B75">
+</div>
+</div></div>
+<div class="mf"><button class="btn" onclick="closeM('m-nuevo-emp-p')">Cancelar</button><button class="btn primary" onclick="guardarNuevoEmp()"><i class="fa fa-check"></i> Agregar</button></div>
+</div></div>
+<div id="toast"></div>
+<script>
+const K='cy_v2';
+function load(){try{return JSON.parse(localStorage.getItem(K))||{};}catch(e){return{};}}
+function save(d){localStorage.setItem(K,JSON.stringify(d));}
+
+const RINI=[
+{id:1,cliente:'Faust, Macarena',pax:'x2',ci:'2026-10-14',co:'2026-10-15',noches:1,casa:'Casa Bodega',total:280,cobrado:'ARS 118.440',saldo:'USD 196',cuenta:'Mercado Pago CY',estado:'Cobrado',origen:'Directo',notas:''},
+{id:2,cliente:'Lezcano, Simon (UNIQUED)',pax:'x1',ci:'2026-10-14',co:'2026-10-18',noches:4,casa:'Suite Huerta',total:648,cobrado:'—',saldo:'USD 648',cuenta:'PENDIENTE',estado:'Pendiente',origen:'Tour operador',notas:''},
+{id:3,cliente:'Dixon, Liliana',pax:'x3',ci:'2026-10-22',co:'2026-10-25',noches:3,casa:'Casa Bodega',total:960,cobrado:'ARS 403.200',saldo:'USD 672',cuenta:'Banco Chubut',estado:'Cobrado',origen:'Directo',notas:''},
+{id:4,cliente:'Flia Evans, Gwion',pax:'x4',ci:'2026-10-20',co:'2026-10-22',noches:2,casa:'Casa Bodega',total:940,cobrado:'—',saldo:'USD 940',cuenta:'Al check-in',estado:'Al check-in',origen:'Directo',notas:''},
+{id:5,cliente:'Almeida, Frank',pax:'x2',ci:'2026-10-28',co:'2026-11-02',noches:5,casa:'Casa Bodega',total:1400,cobrado:'USD 1.400',saldo:'—',cuenta:'Galicia USD MY',estado:'Cobrado',origen:'Directo',notas:''},
+{id:6,cliente:'Lisanti, Luis',pax:'x2',ci:'2026-10-25',co:'2026-10-30',noches:5,casa:'Casa Deck',total:1400,cobrado:'—',saldo:'USD 1.400',cuenta:'PENDIENTE',estado:'Pendiente',origen:'Directo',notas:'Ex Alvear'},
+{id:7,cliente:'Salguero, Silvana',pax:'x6',ci:'2026-11-21',co:'2026-11-24',noches:3,casa:'Casa Principal',total:1998,cobrado:'ARS 852.000',saldo:'USD 1.398',cuenta:'Mercado Pago CY',estado:'Pendiente',origen:'Directo',notas:''},
+
+{id:9,cliente:'Eichelmann, Maria Emilia',pax:'x10',ci:'2027-01-12',co:'2027-01-20',noches:9,casa:'Casa Principal',total:10350,cobrado:'ARS 4.425.000',saldo:'USD 7.245',cuenta:'Mercado Pago CY',estado:'Pendiente',origen:'Directo',notas:'2 niños'},
+{id:10,cliente:'Pura aventura, Shilito',pax:'x2',ci:'2027-01-27',co:'2027-01-29',noches:2,casa:'Casa Deck',total:780,cobrado:'USD 780',saldo:'—',cuenta:'WISE MY',estado:'Cobrado',origen:'Tour operador',notas:''},
+{id:11,cliente:'Pura aventura, Durbin',pax:'x2',ci:'2027-01-30',co:'2027-02-01',noches:2,casa:'Casa Deck',total:780,cobrado:'USD 590',saldo:'USD 190',cuenta:'WISE MY',estado:'Pendiente',origen:'Tour operador',notas:''},
+{id:12,cliente:'Barreiro, Anibal',pax:'x2',ci:'2027-02-05',co:'2027-02-08',noches:3,casa:'Casa Deck',total:840,cobrado:'USD 250',saldo:'USD 590',cuenta:'Galicia USD MY',estado:'Pendiente',origen:'Directo',notas:''},
+];
+
+const VINI=[
+{id:1,v:'Chardonnay',a:2024,l:'',s:null,m:6,c:null,pd:null,ps:null,pe:null,pc:null,n:''},
+{id:2,v:'Sauvignon Blanc',a:2024,l:'',s:null,m:6,c:null,pd:null,ps:null,pe:null,pc:null,n:''},
+{id:3,v:'Chardonnay Elevage',a:2023,l:'',s:null,m:4,c:null,pd:null,ps:null,pe:null,pc:null,n:''},
+{id:4,v:'Semillon',a:2024,l:'',s:null,m:6,c:null,pd:null,ps:null,pe:null,pc:null,n:''},
+{id:5,v:'Cabernet Franc',a:2023,l:'',s:null,m:6,c:null,pd:null,ps:null,pe:null,pc:null,n:''},
+{id:6,v:'Rio Frio',a:2023,l:'Blend patagónico',s:null,m:6,c:null,pd:null,ps:null,pe:null,pc:null,n:''},
+{id:7,v:'Pinot Noir',a:2023,l:'',s:null,m:8,c:null,pd:null,ps:null,pe:null,pc:null,n:''},
+{id:8,v:'Abrazo',a:2023,l:'Espumante',s:null,m:4,c:null,pd:null,ps:null,pe:null,pc:null,n:'Espumante'},
+{id:9,v:'Rosé de Trevelin',a:2024,l:'',s:null,m:6,c:null,pd:null,ps:null,pe:null,pc:null,n:''},
+];
+
+const PINI={
+'Elba Leufuman':{color:'#7B2D42',rol:'Limpieza / casas',dias:[
+{f:'2026-02-23',t:'Franco'},{f:'2026-03-04',t:'Franco'},{f:'2026-03-05',t:'Franco'},{f:'2026-03-06',t:'Franco'},{f:'2026-03-07',t:'Franco'},{f:'2026-03-08',t:'Franco'},{f:'2026-03-09',t:'Franco'},{f:'2026-03-10',t:'Franco'},{f:'2026-03-15',t:'Franco'},{f:'2026-03-28',t:'Franco'},{f:'2026-03-29',t:'Franco'},
+{f:'2026-04-10',t:'Franco'},{f:'2026-04-29',t:'Franco'},{f:'2026-04-30',t:'Franco'},
+{f:'2026-05-01',t:'Franco'},{f:'2026-05-11',t:'Franco'},{f:'2026-05-12',t:'Franco'},{f:'2026-05-13',t:'Franco'},{f:'2026-05-14',t:'Franco'},{f:'25/05/2026',t:'Medio día'},{f:'2026-05-26',t:'Franco'},{f:'2026-05-27',t:'Franco'},{f:'2026-05-28',t:'Franco'},{f:'2026-05-29',t:'Franco'}
+]},
+'Macarena Mora':{color:'#1F4E79',rol:'Administración',dias:[
+{f:'2026-02-08',t:'Franco'},{f:'2026-02-21',t:'Franco'},{f:'2026-03-08',t:'Franco'},{f:'2026-03-15',t:'Franco'},{f:'2026-03-21',t:'Franco'},{f:'2026-03-28',t:'Franco'},{f:'2026-03-29',t:'Franco'},
+{f:'2026-04-05',t:'Franco'},{f:'2026-04-12',t:'Franco'},{f:'2026-04-19',t:'Franco'},{f:'2026-04-20',t:'Franco'},
+{f:'2026-05-01',t:'Franco'},{f:'2026-05-10',t:'Franco'},{f:'2026-05-16',t:'Franco'},{f:'2026-05-23',t:'Franco'}
+]},
+'Marcia Martinez':{color:'#2D5A1B',rol:'Cocina / gastronomía',dias:[
+{f:'2026-04-03',t:'Franco'},{f:'2026-05-07',t:'Franco'},{f:'2026-05-08',t:'Franco'},{f:'2026-05-11',t:'Franco'},
+{f:'2026-06-08',t:'Vacaciones',n:'Vacaciones del 08 al 22/06'},{f:'2026-06-22',t:'Vacaciones',n:'Fin vacaciones 22/06'}
+]},
+'Jessica Martinez':{color:'#6B4226',rol:'Atención al huésped',dias:[
+{f:'2026-01-18',t:'Franco'},{f:'2026-02-04',t:'Franco'},{f:'2026-02-05',t:'Franco'},{f:'2026-02-06',t:'Franco'},{f:'2026-02-12',t:'Franco'},{f:'2026-02-13',t:'Franco'},{f:'2026-02-14',t:'Franco'},{f:'2026-02-15',t:'Franco'},{f:'2026-02-19',t:'Franco'},{f:'2026-02-20',t:'Franco'},{f:'2026-02-23',t:'Franco'},{f:'2026-02-24',t:'Franco'},{f:'2026-02-25',t:'Franco'},{f:'25/02/2026',t:'Medio día'},
+{f:'2026-03-01',t:'Franco'},{f:'2026-03-02',t:'Franco'},{f:'04/03/2026',t:'Medio día'},{f:'2026-03-11',t:'Franco'},{f:'2026-03-13',t:'Franco'},{f:'2026-03-15',t:'Franco'},{f:'17/03/2026',t:'Medio día'},{f:'2026-03-21',t:'Franco'},{f:'2026-03-23',t:'Franco'},{f:'2026-03-24',t:'Franco'},
+{f:'2026-04-02',t:'Franco'},{f:'2026-04-03',t:'Franco'},{f:'2026-04-04',t:'Franco'},{f:'2026-04-15',t:'Franco'},{f:'2026-04-16',t:'Franco'},{f:'2026-04-17',t:'Franco'},{f:'2026-04-18',t:'Franco'},{f:'2026-04-19',t:'Franco'},{f:'2026-04-20',t:'Franco'},{f:'2026-04-21',t:'Franco'},{f:'2026-04-22',t:'Franco'},{f:'2026-04-23',t:'Franco'},{f:'2026-04-24',t:'Franco'},{f:'2026-04-25',t:'Franco'},{f:'2026-04-27',t:'Franco'},
+{f:'2026-05-02',t:'Franco'},{f:'2026-05-03',t:'Franco'},{f:'2026-05-05',t:'Franco'},{f:'23/05/2026',t:'Medio día'},{f:'2026-05-24',t:'Franco'},{f:'25/05/2026',t:'Medio día'}
+]}
+};
+
+const INV_INIT={
+bodega:{
+'Cocina':['Frigobar','6 tazas vidrio','4 taza aluminio','4 vasos vidrio grandes','3 vasos vidrio pequeños','3 bowls aluminio','4 platos pequeños','4 platos grandes','1 plato cerámica extra','4 copas','Porta servilletas','Pava eléctrica','Tostadora','Cafetera','Cafetera prensa','Caja de té','Yerbera','Café instantáneo','Chocolatada','Azúcar','Mate/bombilla','Salero/pimentero','Sartén','Tartera aluminio','Colador','Tabla picar','Rallador','Pisa papas','Pela papas','Batidor varillas','Cuchillos x2','Cuchara madera','Cucharón','Batidor plástico','Abre latas','Sacacorchos','3 untadores','5 cuchillos','4 tenedores','4 cucharas','5 cucharitas','Escurridor platos','Tabla de madera'],
+'Living':['2 almohadones rallados grandes','2 almohadones floreados cuadrados','2 almohadones floreados rect.','Mesa ratona','Alfombra living','Silla de madera','Lámpara pared blanca','Lámpara pared marrón','Sillón 1 cuerpo + almohadón','Cuadro rectangular','Roller ventana chica','Roller ventana grande'],
+'Comedor':['Mesa comedor','4 sillas','Biblioteca y libros','Caminito para la mesa','Florero','Mueble y decoraciones','2 cuadros','Perchero pared + sombrero y manta','Estufa leña'],
+'Baño':['Secador de pelo','Cesto madera con porta jabón','Banco de madera','Jabón líquido','Tacho de basura','Set shampoo, acondicionador y jabón orgánico'],
+'Habitación principal':['Cama 2 plazas','Almohadones grandes x2','Almohadones chicos x2','Pie de cama','Alfombra azul','Mesas de luz x2','Perchas plástico x6','Perchas madera x3','Manta extra','Roller ventana grande','Roller ventana chica','Cuadros x2','Lámparas pared marrón x2','Banco blanco'],
+'2da Habitación':['Mesas de luz madera x2','Lámparas negras pared x2','Cuadro','Roller ventana grande','Roller ventana chica','Almohadones grandes floreados x2','Almohadones pequeños x2','Perchas madera x3','Pie de cama','Manta extra','Alfombra azul','Silla madera'],
+'Exterior':['Mesa y 2 sillas blancas','2 almohadones']
+},
+deck:{},huerta:{},suite:{},principal:{}
+};
+
+const REG_INIT={
+general:['Check-in: a partir de las 15:00 hs','Check-out: hasta las 11:00 hs','No se permiten mascotas (salvo autorización previa)','No fumar dentro de las instalaciones','Respetar el silencio a partir de las 23:00 hs','No se permiten eventos sin autorización','Máximo de personas según capacidad de cada casa','Dejar la casa en las condiciones recibidas','Reportar cualquier daño inmediatamente','Los vinos de la bodega son de venta — consultar precios'],
+bodega:['Capacidad máxima: 4 personas','El frigobar contiene bebidas de consumo — se descuenta al checkout','No mover muebles sin autorización','Estufa a leña: consultar con el staff'],
+deck:['Capacidad máxima: 4 personas','Acceso al deck exterior incluido','Parrilla disponible — solicitar carbón al staff'],
+huerta:['Capacidad máxima: 4 personas','Vista a los viñedos desde la habitación','Cerrar ventanas por la noche'],
+suite:['Capacidad máxima: 2 personas','Baño privado incluido','Desayuno incluido en la tarifa'],
+principal:['Capacidad máxima: 10 personas','Ideal para grupos y familias','Cocina equipada completa','Pedir uso del salón con anticipación']
+};
+
+
+const CLIENTES_INIT = [
+  // Huéspedes confirmados de reservas
+  {id:1,nombre:'Faust, Macarena',email:'',tel:'',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'14/10/2026',notas:'Casa Bodega'},
+  {id:2,nombre:'Lezcano, Simon',email:'',tel:'',ciudad:'Argentina',origen:'Tour operador',empresa:'UNIQUED Bariloche',visitas:1,ultima:'14/10/2026',notas:'Suite Huerta'},
+  {id:3,nombre:'Dixon, Liliana',email:'',tel:'',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'22/10/2026',notas:'Casa Bodega'},
+  {id:4,nombre:'Flia Evans, Gwion',email:'',tel:'',ciudad:'Argentina',origen:'Directo',empresa:'',visitas:1,ultima:'20/10/2026',notas:'Casa Bodega'},
+  {id:5,nombre:'Almeida, Frank',email:'',tel:'',ciudad:'Argentina',origen:'Directo',empresa:'',visitas:1,ultima:'28/10/2026',notas:'Casa Bodega'},
+  {id:6,nombre:'Lisanti, Luis',email:'',tel:'',ciudad:'Argentina',origen:'Directo',empresa:'',visitas:1,ultima:'25/10/2026',notas:'Ex Alvear. Casa Deck'},
+  {id:7,nombre:'Salguero, Silvana',email:'',tel:'',ciudad:'Argentina',origen:'Directo',empresa:'',visitas:1,ultima:'21/11/2026',notas:'Casa Principal x6'},
+  {id:8,nombre:'Eichelmann, Maria Emilia',email:'',tel:'',ciudad:'Argentina',origen:'Directo',empresa:'',visitas:1,ultima:'12/01/2027',notas:'Casa Principal x10. 2 niños'},
+  {id:9,nombre:'Pura aventura, Shilito',email:'',tel:'',ciudad:'Argentina',origen:'Tour operador',empresa:'Pura Aventura',visitas:1,ultima:'27/01/2027',notas:'Casa Deck'},
+  {id:10,nombre:'Pura aventura, Durbin',email:'',tel:'',ciudad:'Argentina',origen:'Tour operador',empresa:'Pura Aventura',visitas:1,ultima:'30/01/2027',notas:'Casa Deck'},
+  {id:11,nombre:'Barreiro, Anibal',email:'',tel:'',ciudad:'Argentina',origen:'Directo',empresa:'',visitas:1,ultima:'05/02/2027',notas:'Casa Deck'},
+  // Club de vinos
+  {id:12,nombre:'Isabel Noble',email:'',tel:'1126526614',ciudad:'Buenos Aires',origen:'Visita',empresa:'',visitas:1,ultima:'oct 2021',notas:'oct 2021'},
+  {id:13,nombre:'Natalia Cabral',email:'',tel:'2944700999',ciudad:'Rio Negro',origen:'Visita',empresa:'',visitas:1,ultima:'oct 2021',notas:''},
+  {id:14,nombre:'Martin Garcia Moron',email:'',tel:'2974191420',ciudad:'Comodoro Rivadavia',origen:'Almuerzo/ Cena',empresa:'',visitas:1,ultima:'oct 2021',notas:''},
+  {id:15,nombre:'Melisa Hernandez Osorio',email:'',tel:'2984403588',ciudad:'Rio Negro',origen:'Directo',empresa:'',visitas:1,ultima:'oct 2021',notas:'Casa Bodega'},
+  {id:16,nombre:'Camila Villar',email:'',tel:'1166301938',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'oct 2021',notas:'Casa Deck'},
+  {id:17,nombre:'Cristian Amalfitano',email:'',tel:'1134295858',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'oct 2021',notas:'Casa Deck'},
+  {id:18,nombre:'Leandro Gonzalo Arro',email:'',tel:'2920573098',ciudad:'Viedma',origen:'Directo',empresa:'',visitas:1,ultima:'oct 2021',notas:'Casa Bodega'},
+  {id:19,nombre:'Silvia de Moura',email:'',tel:'1131440007',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'oct 2021',notas:'Casa Deck'},
+  {id:20,nombre:'Andrea Laurino',email:'',tel:'1158895630',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'oct 2021',notas:'Casa Bodega'},
+  {id:21,nombre:'Hector Nervi',email:'',tel:'2944413502',ciudad:'Bariloche',origen:'Directo',empresa:'',visitas:1,ultima:'nov 2021',notas:'Casa Deck. Compró vinos'},
+  {id:22,nombre:'Laura Cascardo',email:'',tel:'1161645376',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'nov 2021',notas:'Casa Deck'},
+  {id:23,nombre:'Michelle Mariano Kirihara',email:'',tel:'5545999285959',ciudad:'Brasil',origen:'Visita',empresa:'',visitas:1,ultima:'dic 2021',notas:''},
+  {id:24,nombre:'Carla',email:'',tel:'447453299623',ciudad:'Inglaterra',origen:'Almuerzo/ Cena',empresa:'',visitas:1,ultima:'dic 2021',notas:''},
+  {id:25,nombre:'Daniel Schurman',email:'',tel:'1144759133',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'dic 2021',notas:'Casa Deck'},
+  {id:26,nombre:'Polina Bolushevskaya',email:'',tel:'1154601485',ciudad:'Buenos Aires',origen:'Almuerzo/ Cena',empresa:'',visitas:1,ultima:'dic 2021',notas:''},
+  {id:27,nombre:'Matilde Rinaldi',email:'',tel:'34622638193',ciudad:'España',origen:'Directo',empresa:'',visitas:1,ultima:'ene 2022',notas:'Casa Deck'},
+  {id:28,nombre:'Maximo Balza',email:'',tel:'2235312619',ciudad:'Argentina',origen:'Directo',empresa:'',visitas:1,ultima:'ene 2022',notas:'Compró vinos'},
+  {id:29,nombre:'Lucia Marcone',email:'luciajmarcone@gmail.com',tel:'1135812209',ciudad:'Buenos Aires',origen:'Visita',empresa:'',visitas:1,ultima:'ene 2022',notas:''},
+  {id:30,nombre:'Sandro',email:'',tel:'5547991971208',ciudad:'Brasil',origen:'Directo',empresa:'',visitas:1,ultima:'ene 2023',notas:'Compraron vinos'},
+  {id:31,nombre:'Marina K',email:'',tel:'79175454510',ciudad:'Rusia',origen:'Directo',empresa:'',visitas:1,ultima:'ene 2023',notas:'Casa Principal'},
+  {id:32,nombre:'Rocio Lamarque',email:'',tel:'1155689995',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'feb 2023',notas:'Casa Deck'},
+  {id:33,nombre:'Maria Raquel',email:'',tel:'56994426396',ciudad:'Chile',origen:'Directo',empresa:'',visitas:1,ultima:'feb 2023',notas:'Casa Bodega'},
+  {id:34,nombre:'Edwin Huang',email:'',tel:'8613622636599',ciudad:'China',origen:'Contacto',empresa:'',visitas:0,ultima:'',notas:'Importador vinos China'},
+  {id:35,nombre:'Dakota',email:'',tel:'18178794715',ciudad:'Estados Unidos',origen:'Visita',empresa:'',visitas:1,ultima:'abr 2022',notas:''},
+  {id:36,nombre:'Vladimir Povshenko',email:'',tel:'79057773366',ciudad:'Rusia',origen:'Almuerzo/ Cena',empresa:'',visitas:1,ultima:'oct 2023',notas:''},
+  {id:37,nombre:'Tyler (piloto)',email:'',tel:'12399106654',ciudad:'Estados Unidos',origen:'Directo',empresa:'',visitas:1,ultima:'nov 2023',notas:'Casa Principal'},
+  {id:38,nombre:'Jonas Adriaensens',email:'',tel:'32485195339',ciudad:'Bèlgica',origen:'Almuerzo/ Cena',empresa:'',visitas:1,ultima:'nov 2023',notas:''},
+  {id:39,nombre:'Kendra',email:'',tel:'19415869455',ciudad:'Estados Unidos',origen:'Almuerzo/ Cena',empresa:'',visitas:1,ultima:'ene 2024',notas:''},
+  {id:40,nombre:'Guillermo Marcos',email:'guillermomarcos81@hotmail.com',tel:'59891200220',ciudad:'Uruguay',origen:'Directo',empresa:'',visitas:1,ultima:'',notas:'Casa Bodega'},
+  {id:41,nombre:'Rita Kalbermatten',email:'kalbermatten.rl@gmail.com',tel:'1144947707',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'feb 2024',notas:'Casa Deck'},
+  {id:42,nombre:'Eirin Lien',email:'',tel:'4748270536',ciudad:'Noruega',origen:'Almuerzo/ Cena',empresa:'',visitas:1,ultima:'feb 2024',notas:''},
+  {id:43,nombre:'Sarah',email:'',tel:'31627994686',ciudad:'Holanda',origen:'Almuerzo/ Cena',empresa:'',visitas:1,ultima:'',notas:''},
+  {id:44,nombre:'Demi',email:'',tel:'31650453112',ciudad:'Holanda',origen:'Almuerzo/ Cena',empresa:'',visitas:1,ultima:'feb 2024',notas:''},
+  {id:45,nombre:'Lis',email:'',tel:'4561546707',ciudad:'Dinamarca',origen:'Visita',empresa:'',visitas:1,ultima:'feb 2024',notas:''},
+  {id:46,nombre:'Mathilde Pinte',email:'',tel:'32471400961',ciudad:'Bèlgica',origen:'Contacto',empresa:'',visitas:0,ultima:'',notas:'Sommelier'},
+  {id:47,nombre:'Chris Bladon',email:'',tel:'447702781023',ciudad:'Inglaterra',origen:'Directo',empresa:'Pura Aventura',visitas:1,ultima:'',notas:''},
+  {id:48,nombre:'Jim Buttery',email:'',tel:'447476747105',ciudad:'Inglaterra',origen:'Visita',empresa:'',visitas:1,ultima:'mar 2024',notas:''},
+  {id:49,nombre:'Nick Van Lier',email:'',tel:'31616645746',ciudad:'Holanda',origen:'Visita',empresa:'',visitas:1,ultima:'',notas:'Quería comprar vinos en Europa'},
+  {id:50,nombre:'Audrey',email:'',tel:'13659983092',ciudad:'Estados Unidos',origen:'Almuerzo/ Cena',empresa:'',visitas:1,ultima:'may 2023',notas:''},
+  {id:51,nombre:'Florence Rouquette',email:'',tel:'33680139687',ciudad:'Francia',origen:'Almuerzo/ Cena',empresa:'',visitas:1,ultima:'dic 2024',notas:''},
+  {id:52,nombre:'Sarah Lafleur',email:'',tel:'33651191706',ciudad:'Francia',origen:'Directo',empresa:'',visitas:1,ultima:'',notas:''},
+  {id:53,nombre:'Kyle Canepa',email:'',tel:'15617587863',ciudad:'Estados Unidos',origen:'Directo',empresa:'',visitas:1,ultima:'dic 2024',notas:''},
+  {id:54,nombre:'Alicia Ortiz',email:'',tel:'19198244223',ciudad:'Estados Unidos',origen:'Directo',empresa:'',visitas:1,ultima:'dic 2024',notas:'Casa Deck'},
+  {id:55,nombre:'Joe L',email:'',tel:'447908128814',ciudad:'Inglaterra',origen:'Directo',empresa:'',visitas:1,ultima:'ago 2024',notas:''},
+  {id:56,nombre:'Jenny Reid',email:'',tel:'447989240364',ciudad:'Inglaterra',origen:'Directo',empresa:'',visitas:1,ultima:'nov 2024',notas:'Casa Bodega'},
+  {id:57,nombre:'Teresa Garlock',email:'',tel:'12392613999',ciudad:'Estados Unidos',origen:'Directo',empresa:'',visitas:1,ultima:'nov 2024',notas:''},
+  {id:58,nombre:'Gregory Hall',email:'',tel:'17752244766',ciudad:'Estados Unidos',origen:'Directo',empresa:'',visitas:1,ultima:'nov 2025',notas:''},
+  {id:59,nombre:'Gareth Williams',email:'',tel:'447450285638',ciudad:'Inglaterra',origen:'Visita',empresa:'',visitas:1,ultima:'nov 2025',notas:'Degustación'},
+  {id:60,nombre:'Alister Huynh',email:'',tel:'61411632989',ciudad:'Australia',origen:'Visita',empresa:'',visitas:1,ultima:'nov 2025',notas:''},
+  {id:61,nombre:'Rogerio Urbano Feyh',email:'rogerio@feyh.com.br',tel:'5548999038118',ciudad:'Brasil',origen:'Directo',empresa:'',visitas:1,ultima:'',notas:'Casa Deck'},
+  {id:62,nombre:'Turgut Torkgoz',email:'t.tokgoz@oenotrian.com',tel:'905323133682',ciudad:'Turquía',origen:'Almuerzo/ Cena',empresa:'Oenotrian',visitas:1,ultima:'',notas:'Tours premium gastronomía y vinos'},
+  {id:63,nombre:'Esteban Armayor',email:'',tel:'491714192504',ciudad:'Alemania',origen:'Visita',empresa:'',visitas:1,ultima:'nov 2025',notas:''},
+  {id:64,nombre:'Johan Dettel',email:'johan.dettel@gmail.com',tel:'46708760362',ciudad:'Suecia',origen:'Directo',empresa:'',visitas:1,ultima:'ene 2026',notas:'Casa Huerta'},
+  {id:65,nombre:'Herve Hamon',email:'insrv27@gmail.com',tel:'33608514004',ciudad:'Francia',origen:'Directo',empresa:'',visitas:1,ultima:'ene 2026',notas:'Casa Deck'},
+  {id:66,nombre:'Christine Vermaak',email:'christine.e.vermaak@gmail.com',tel:'447472704581',ciudad:'Reino Unido',origen:'Directo',empresa:'',visitas:1,ultima:'',notas:'Casa Deck'},
+  {id:67,nombre:'Lotte Nash',email:'lottenash@jacadatravel.com',tel:'447387162219',ciudad:'Inglaterra',origen:'Visita',empresa:'Jacada Travel',visitas:1,ultima:'feb 2026',notas:''},
+  {id:68,nombre:'Lorenzo Alvarez-Roos',email:'',tel:'15304143012',ciudad:'Estados Unidos',origen:'Directo',empresa:'',visitas:1,ultima:'',notas:''},
+  {id:69,nombre:'Amy Saggese',email:'',tel:'14083060561',ciudad:'Estados Unidos',origen:'Visita',empresa:'',visitas:1,ultima:'ene 2025',notas:''},
+  {id:70,nombre:'Madison',email:'',tel:'19179510750',ciudad:'Estados Unidos',origen:'Visita',empresa:'',visitas:1,ultima:'',notas:'Chef vuelos privados'},
+  {id:71,nombre:'Della Watter',email:'',tel:'15616354039',ciudad:'Estados Unidos',origen:'Visita',empresa:'',visitas:1,ultima:'mar 2026',notas:''},
+  {id:72,nombre:'Jorgen Joval Dahl',email:'',tel:'4792466616',ciudad:'Noruega',origen:'Directo',empresa:'',visitas:1,ultima:'ene 2026',notas:'Casa Bodega'},
+  {id:73,nombre:'Martin Rauh',email:'',tel:'41765644460',ciudad:'Suiza',origen:'Visita',empresa:'',visitas:1,ultima:'',notas:''},
+  {id:74,nombre:'Reinhard G',email:'',tel:'491722085164',ciudad:'Alemania',origen:'Visita',empresa:'',visitas:1,ultima:'feb 2026',notas:''},
+  {id:75,nombre:'Mark Mackintosh',email:'',tel:'31611298942',ciudad:'Holanda',origen:'Visita',empresa:'',visitas:1,ultima:'',notas:'Sacaron fotos'},
+  {id:76,nombre:'Claudia Carles',email:'claudiacarles@grupoprandi.com.ar',tel:'3516790306',ciudad:'Córdoba',origen:'Directo',empresa:'Grupo Prandi',visitas:1,ultima:'ene 2026',notas:'Casa Deck'},
+  {id:77,nombre:'Milagros Scavarda',email:'mili@collectionms.com',tel:'56982998016',ciudad:'Chile',origen:'Directo',empresa:'Pata Lodge',visitas:1,ultima:'feb 2026',notas:'Casa Bodega'},
+  {id:78,nombre:'Guillermo Staudt',email:'',tel:'56998713329',ciudad:'Chile',origen:'Directo',empresa:'',visitas:1,ultima:'ene 2025',notas:'Casa Deck'},
+  {id:79,nombre:'Carolina Clerici',email:'',tel:'56995393552',ciudad:'Chile',origen:'Almuerzo/ Cena',empresa:'',visitas:1,ultima:'feb 2025',notas:''},
+  {id:80,nombre:'Raul Buenaventura',email:'',tel:'56966466367',ciudad:'Chile',origen:'Directo',empresa:'',visitas:1,ultima:'',notas:''},
+  {id:81,nombre:'Juan Retamal',email:'',tel:'56988890261',ciudad:'Chile',origen:'Almuerzo/ Cena',empresa:'',visitas:1,ultima:'oct 2022',notas:''},
+  {id:82,nombre:'Constanza Cristi',email:'',tel:'56954498328',ciudad:'Chile',origen:'Almuerzo/ Cena',empresa:'',visitas:1,ultima:'abr 2023',notas:''},
+  {id:83,nombre:'Francisco Bedeschi',email:'',tel:'56958023599',ciudad:'Chile',origen:'Directo',empresa:'',visitas:1,ultima:'nov 2024',notas:''},
+  {id:84,nombre:'Nea Barends',email:'',tel:'56976690598',ciudad:'Chile',origen:'Almuerzo/ Cena',empresa:'',visitas:1,ultima:'feb 2025',notas:''},
+  {id:85,nombre:'Juan Antonio Pardo',email:'',tel:'56998879718',ciudad:'Chile',origen:'Almuerzo/ Cena',empresa:'',visitas:1,ultima:'dic 2024',notas:''},
+  {id:86,nombre:'Francisco Vega',email:'',tel:'56988261529',ciudad:'Chile',origen:'Almuerzo/ Cena',empresa:'',visitas:1,ultima:'nov 2024',notas:''},
+  {id:87,nombre:'Alvaro Gaete',email:'alvaro.gaete5@gmail.com',tel:'56973867359',ciudad:'Chile',origen:'Almuerzo/ Cena',empresa:'',visitas:1,ultima:'',notas:''},
+  {id:88,nombre:'Sol Branciari',email:'',tel:'59895540365',ciudad:'Uruguay',origen:'Visita',empresa:'',visitas:1,ultima:'nov 2021',notas:''},
+  {id:89,nombre:'Martin Banquero',email:'',tel:'59895544443',ciudad:'Uruguay',origen:'Almuerzo/ Cena',empresa:'',visitas:1,ultima:'feb 2022',notas:''},
+  {id:90,nombre:'Daniel Garcia',email:'',tel:'59897093433',ciudad:'Uruguay',origen:'Visita',empresa:'',visitas:1,ultima:'ene 2024',notas:''},
+  {id:91,nombre:'Pamela OFarrel',email:'',tel:'59898678942',ciudad:'Uruguay',origen:'Visita',empresa:'',visitas:1,ultima:'sep 2024',notas:''},
+  {id:92,nombre:'Ines Amarante',email:'',tel:'59899362133',ciudad:'Uruguay',origen:'Almuerzo/ Cena',empresa:'',visitas:1,ultima:'oct 2024',notas:''},
+  {id:93,nombre:'Lara Robledo',email:'lararobledo@gmail.com',tel:'59896987089',ciudad:'Uruguay',origen:'Contacto',empresa:'',visitas:0,ultima:'',notas:'Sommelier. Interesa traer grupos'},
+  {id:94,nombre:'Pedro Murakami',email:'',tel:'595985955500',ciudad:'Paraguay',origen:'Directo',empresa:'',visitas:1,ultima:'',notas:'Casa Bodega y Huerta'},
+  {id:95,nombre:'Silvana de Martino',email:'',tel:'595982842380',ciudad:'Paraguay',origen:'Almuerzo/ Cena',empresa:'',visitas:1,ultima:'ene 2025',notas:''},
+  {id:96,nombre:'Veronica Castillo',email:'',tel:'595981467611',ciudad:'Paraguay',origen:'Almuerzo/ Cena',empresa:'',visitas:1,ultima:'ene 2025',notas:''},
+  {id:97,nombre:'Victor Cartes',email:'',tel:'595981173186',ciudad:'Paraguay',origen:'Visita',empresa:'',visitas:1,ultima:'oct 2025',notas:'Sunset'},
+  {id:98,nombre:'Federico Pedreros',email:'',tel:'573206073611',ciudad:'Colombia',origen:'Visita',empresa:'',visitas:1,ultima:'mar 2023',notas:''},
+  {id:99,nombre:'Daniela Bravo',email:'',tel:'56973657802',ciudad:'Chile',origen:'Directo',empresa:'',visitas:1,ultima:'feb 2025',notas:'Casa Deck'},
+  {id:100,nombre:'Livia Luppo',email:'',tel:'5511995314760',ciudad:'Brasil',origen:'Almuerzo/ Cena',empresa:'',visitas:1,ultima:'dic 2022',notas:''},
+  {id:101,nombre:'Patricia Nakami',email:'',tel:'5511985750544',ciudad:'Brasil',origen:'Directo',empresa:'',visitas:1,ultima:'',notas:'Casa Bodega'},
+  {id:102,nombre:'Rodrigo Contesini',email:'',tel:'5541992329914',ciudad:'Brasil',origen:'Directo',empresa:'',visitas:1,ultima:'ene 2025',notas:''},
+  {id:103,nombre:'Mariana Robles',email:'',tel:'1150512474',ciudad:'Buenos Aires',origen:'Visita',empresa:'',visitas:1,ultima:'nov 2021',notas:''},
+  {id:104,nombre:'Norberto Borzese',email:'',tel:'1149452029',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'feb 2022',notas:''},
+  {id:105,nombre:'Pilar Pegoraro',email:'',tel:'1131764100',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'feb 2022',notas:'Casa Deck'},
+  {id:106,nombre:'Debora Maier',email:'',tel:'2944533508',ciudad:'Bariloche',origen:'Directo',empresa:'',visitas:1,ultima:'feb 2022',notas:'Casa Deck'},
+  {id:107,nombre:'Dani Abadi',email:'',tel:'1141669992',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'feb 2022',notas:'Casa Deck'},
+  {id:108,nombre:'Violeta Ruiz',email:'',tel:'1140697887',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'feb 2022',notas:'Casa Deck y Bodega'},
+  {id:109,nombre:'Matias Dominguez',email:'',tel:'1162025911',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'feb 2022',notas:'Casa Deck. Compraron vinos'},
+  {id:110,nombre:'Rita Meyer',email:'',tel:'2944532260',ciudad:'Bariloche',origen:'Directo',empresa:'',visitas:1,ultima:'oct 2022',notas:'Casa Deck'},
+  {id:111,nombre:'Sergio Quinoni',email:'sergio10.quinones@gmail.com',tel:'2944605513',ciudad:'Bariloche',origen:'Directo',empresa:'',visitas:1,ultima:'oct 2022',notas:''},
+  {id:112,nombre:'Alex Broderick',email:'',tel:'1121688208',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'dic 2022',notas:'Casa Bodega'},
+  {id:113,nombre:'Melisa Mantello',email:'mmantello@gmail.com',tel:'1157566354',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'ene 2023',notas:''},
+  {id:114,nombre:'Daniel Rosemberg',email:'',tel:'1149605356',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'ene 2023',notas:'Casa Deck'},
+  {id:115,nombre:'Julian Randle',email:'',tel:'1150400941',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'ene 2023',notas:'Casa Principal'},
+  {id:116,nombre:'Monica Comabella',email:'',tel:'3413021704',ciudad:'Rosario',origen:'Directo',empresa:'',visitas:1,ultima:'feb 2023',notas:'Casa Deck'},
+  {id:117,nombre:'Andrea Hirsch',email:'',tel:'1144781241',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'abr 2023',notas:'Casa Bodega'},
+  {id:118,nombre:'Beta Nobile',email:'',tel:'2944303757',ciudad:'Bariloche',origen:'Directo',empresa:'',visitas:1,ultima:'',notas:'Casa Deck'},
+  {id:119,nombre:'Aldo Fenoglio',email:'',tel:'2944536087',ciudad:'Bariloche',origen:'Directo',empresa:'',visitas:1,ultima:'ene 2025',notas:''},
+  {id:120,nombre:'Graciela Toso',email:'gra_toar@yahoo.com.ar',tel:'1140799940',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'nov 2024',notas:'Casa Bodega y Deck'},
+  {id:121,nombre:'Guillermo Moralez',email:'gdmo1968@gmail.com',tel:'1138341118',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'nov 2024',notas:'Casa Deck'},
+  {id:122,nombre:'Patricia Johansen',email:'',tel:'3416215205',ciudad:'Rosario',origen:'Directo',empresa:'',visitas:1,ultima:'dic 2024',notas:'Casa Bodega'},
+  {id:123,nombre:'Leticia Rouges',email:'',tel:'1149288598',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'dic 2024',notas:'Casa Bodega'},
+  {id:124,nombre:'Marina Carballo',email:'',tel:'3416801534',ciudad:'Rosario',origen:'Directo',empresa:'',visitas:1,ultima:'oct 2024',notas:'Casa Deck'},
+  {id:125,nombre:'Facundo Soto',email:'',tel:'1151077148',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'oct 2024',notas:'Casa Huerta'},
+  {id:126,nombre:'Macarena Alonso',email:'',tel:'2914123512',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'oct 2024',notas:'Casa Bodega'},
+  {id:127,nombre:'Elvira Borgaro',email:'',tel:'1145316723',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'oct 2024',notas:'Casa Bodega'},
+  {id:128,nombre:'Florencia Aguirre',email:'',tel:'1144700559',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'oct 2024',notas:'Casa Deck'},
+  {id:129,nombre:'Sebastian Vecchi',email:'sebas.vecchi@gmail.com',tel:'1168740385',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'oct 2024',notas:'Casa Huerta'},
+  {id:130,nombre:'Gabriela Alvarez',email:'',tel:'1131207017',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'oct 2024',notas:'Casa Deck'},
+  {id:131,nombre:'Paola Groppo',email:'poliguana@gmail.com',tel:'1150140049',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'oct 2024',notas:'Casa Huerta'},
+  {id:132,nombre:'Lucia Juarez',email:'lucia-juarez@hotmail.com',tel:'1157190771',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'',notas:'Casa Deck'},
+  {id:133,nombre:'Alejandra Delgado',email:'aleja20-04@hotmail.com',tel:'1162796336',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'oct 2024',notas:'Casa Huerta'},
+  {id:134,nombre:'Federico Larriera',email:'larrierafederico@gmail.com',tel:'1133052969',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'oct 2024',notas:'Casa Huerta'},
+  {id:135,nombre:'Esteban Secchiari',email:'',tel:'1168839410',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'ene 2025',notas:'Casa Deck'},
+  {id:136,nombre:'Marcos Knowles',email:'',tel:'1151356713',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'ene 2025',notas:'Casa Bodega'},
+  {id:137,nombre:'Veronica Iriondo',email:'',tel:'1151472676',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'ene 2025',notas:'Casa Bodega'},
+  {id:138,nombre:'Julia Ines Apicella',email:'',tel:'1156584902',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'ene 2025',notas:'Casa Deck'},
+  {id:139,nombre:'Felicitas Fragueiro',email:'',tel:'1136002021',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'feb 2025',notas:'Casa Bodega'},
+  {id:140,nombre:'Nicolas Repetto',email:'',tel:'1156011868',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'mar 2025',notas:'Casa Bodega'},
+  {id:141,nombre:'Angel Dure',email:'',tel:'1130872010',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'mar 2025',notas:'Casa Deck'},
+  {id:142,nombre:'Daniel Briff',email:'',tel:'1131148553',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'mar 2025',notas:'Casa Deck'},
+  {id:143,nombre:'Facundo Morales',email:'',tel:'1139482764',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'may 2025',notas:'Casa Deck'},
+  {id:144,nombre:'Elizabeth Janza',email:'ejanza@yahoo.com.ar',tel:'1155974552',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'nov 2025',notas:''},
+  {id:145,nombre:'Marcos Ermini',email:'',tel:'3513039159',ciudad:'Córdoba',origen:'Directo',empresa:'',visitas:1,ultima:'',notas:''},
+  {id:146,nombre:'Camila Contreras',email:'',tel:'1132017868',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'nov 2025',notas:''},
+  {id:147,nombre:'Fernan Dubie',email:'',tel:'1140723629',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'dic 2025',notas:''},
+  {id:148,nombre:'Ernesto Sesin',email:'',tel:'3584334685',ciudad:'Córdoba',origen:'Directo',empresa:'',visitas:1,ultima:'',notas:'Casa Bodega'},
+  {id:149,nombre:'Pablo Radice',email:'pdradice@gmail.com',tel:'1141458265',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'',notas:'Casa Bodega'},
+  {id:150,nombre:'Eduardo Rinaldi',email:'',tel:'1165763756',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'',notas:'Casa Huerta'},
+  {id:151,nombre:'Eugenia Laguna',email:'',tel:'1150381898',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'',notas:'Casa Deck'},
+  {id:152,nombre:'Brian Burstein',email:'',tel:'1167240121',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'',notas:'Casa Bodega'},
+  {id:153,nombre:'Alejo Santos',email:'',tel:'1155798178',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'',notas:'Casa Bodega'},
+  {id:154,nombre:'Milagros Irastorza',email:'',tel:'1153270177',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'',notas:'Casa Bodega y Huerta'},
+  {id:155,nombre:'Marcelo Alexander',email:'',tel:'1149369100',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'',notas:'Casa Deck'},
+  {id:156,nombre:'Mariana Mangione',email:'',tel:'2804679148',ciudad:'Chubut',origen:'Directo',empresa:'',visitas:1,ultima:'',notas:'Casa Bodega y Deck'},
+  {id:157,nombre:'Rodrigo Rey',email:'',tel:'1154698827',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'',notas:'Compraron vinos'},
+  {id:158,nombre:'Pablo Estrada',email:'',tel:'1131190205',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'ene 2026',notas:'Casa Bodega'},
+  {id:159,nombre:'Ignacio Ronco',email:'',tel:'2901611460',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'ene 2026',notas:'Casa Deck'},
+  {id:160,nombre:'Cecilia Roca',email:'',tel:'1166580426',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'ene 2026',notas:'Casa Huerta'},
+  {id:161,nombre:'Lucia Rey',email:'reyluciaf@gmail.com',tel:'1164462401',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'ene 2026',notas:'Casa Huerta'},
+  {id:162,nombre:'Candelaria Carreras',email:'',tel:'3512408533',ciudad:'Córdoba',origen:'Directo',empresa:'',visitas:1,ultima:'ene 2026',notas:'Suite Huerta'},
+  {id:163,nombre:'Marie Florio',email:'',tel:'2966751405',ciudad:'Santa Cruz',origen:'Directo',empresa:'',visitas:1,ultima:'ene 2026',notas:'Casa Bodega'},
+  {id:164,nombre:'Ignacio Luparia',email:'',tel:'1154851239',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'ene 2026',notas:'Casa Bodega'},
+  {id:165,nombre:'Nicolas Esquibel',email:'experiencianicoesquibel@gmail.com',tel:'1134281777',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'abr 2026',notas:''},
+  {id:166,nombre:'Javier Menajovsky',email:'',tel:'1144901828',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'feb 2026',notas:'Casa Bodega'},
+  {id:167,nombre:'Rodrigo Morales',email:'',tel:'1150487716',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'feb 2026',notas:'Casa Deck'},
+  {id:168,nombre:'Liliana Molas',email:'',tel:'1160478447',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'ene 2026',notas:'Casa Huerta'},
+  {id:169,nombre:'Antonia Guerena',email:'',tel:'2945696080',ciudad:'Esquel',origen:'Almuerzo/ Cena',empresa:'',visitas:1,ultima:'abr 2026',notas:''},
+  {id:170,nombre:'Veronica de Estrada',email:'',tel:'1157664326',ciudad:'Buenos Aires',origen:'Almuerzo/ Cena',empresa:'',visitas:1,ultima:'oct 2025',notas:''},
+  {id:171,nombre:'Ana Maria Mustapic',email:'',tel:'1144251573',ciudad:'Buenos Aires',origen:'Directo',empresa:'',visitas:1,ultima:'',notas:'Huésped y almuerzo'},
+];
+
+function getData(){
+const d=load();
+if(!d.reservas)d.reservas=JSON.parse(JSON.stringify(RINI));
+if(!d.clientes||d.clientes.length===0)d.clientes=JSON.parse(JSON.stringify(CLIENTES_INIT));
+if(!d.visitas)d.visitas=[
+{id:1,cli:'Antonia Guerena',tipo:'Almuerzo maridaje',pax:4,fecha:'2026-06-14',hora:'1pm',total:'ARS 480.000',cob:'ARS 480.000',est:'Cobrado',not:'SR'},
+{id:2,cli:'Juan Zucchi Araujo',tipo:'Visita guiada',pax:1,fecha:'2026-10-10',hora:'12pm',total:'',cob:'',est:'SR',not:'Sin cargo'},
+{id:3,cli:'Verónica de Estrada',tipo:'Visita + Almuerzo',pax:14,fecha:'2026-10-31',hora:'1pm',total:'USD 1.105',cob:'',est:'Pendiente',not:'1 liberada'},
+{id:4,cli:'Rosario Larrachau',tipo:'Visita guiada',pax:2,fecha:'2026-11-24',hora:'',total:'',cob:'',est:'SR',not:'SR'},
+];
+if(!d.gastos)d.gastos=[];
+if(!d.vinos)d.vinos=JSON.parse(JSON.stringify(VINI));
+if(!d.rodeo)d.rodeo=[];
+if(!d.sanidad)d.sanidad=[];
+if(!d.pariciones)d.pariciones=[];
+if(!d.personal)d.personal=JSON.parse(JSON.stringify(PINI));
+if(!d.inventarios)d.inventarios=JSON.parse(JSON.stringify(INV_INIT));
+if(!d.reglas)d.reglas=JSON.parse(JSON.stringify(REG_INIT));
+return d;
+}
+function setD(d){save(d);}
+
+// NAV
+const TITLES={inicio:'Inicio',frontdesk:'Front Desk',reservas:'Reservas de alojamiento',clientes:'Clientes',visitas:'Visitas y Almuerzos',finanzas:'Finanzas',vinos:'Vinos',club:'Club de Vinos',ganaderia:'Ganadería',inventarios:'Inventarios de Casas',reglas:'Reglas de Casas',personal:'Personal',emails:'Templates de Email'};
+function goto(p){
+document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+document.getElementById('page-'+p).classList.add('active');
+const ni=document.querySelector('.nav-item[onclick*="\''+p+'\'"]');
+if(ni)ni.classList.add('active');
+document.getElementById('ptitle').textContent=TITLES[p]||p;
+document.getElementById('sidebar').classList.remove('open');
+render(p);
+}
+function render(p){
+if(p==='inicio')renderInicio();
+if(p==='frontdesk')renderFD();
+if(p==='reservas')renderReservas();
+if(p==='clientes')renderClientes();
+if(p==='visitas')renderVisitas();
+if(p==='finanzas'){renderFinanzas();}
+
+if(p==='vinos')renderVinos();
+if(p==='club')renderClub();
+if(p==='ganaderia')renderGan();
+if(p==='inventarios')renderInv();
+if(p==='reglas')renderReglas();
+if(p==='personal'){persEmpAct=persEmpAct||'Elba Leufuman';renderPersonal();}
+if(p==='emails')renderEmails();
+
+}
+
+// MODAL
+function openM(id){document.getElementById(id).classList.add('open');}
+function closeM(id){document.getElementById(id).classList.remove('open');}
+
+// TOAST
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+// HELPERS
+function fd(s){if(!s)return'—';const p=s.split('-');return p[2]+'/'+p[1]+'/'+p[0];}
+function ini(n){return n.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();}
+const AVC=['#7B2D42','#1F4E79','#2D5A1B','#6B4226','#4A4078','#1F6B75'];
+function avc(i){return AVC[i%AVC.length];}
+const CC={'Casa Bodega':'#7B2D42','Casa Deck':'#1F4E79','Casa Huerta':'#2D5A1B','Suite Huerta':'#6B4226','Casa Principal':'#4A4078'};
+
+// INICIO
+function renderInicio(){
+const d=getData();
+const now=new Date().toISOString().split('T')[0];
+const prox=[...d.reservas].sort((a,b)=>a.ci.localeCompare(b.ci)).filter(r=>r.ci>=now).slice(0,8);
+document.getElementById('tb-inicio-res').innerHTML=prox.map(r=>`<tr>
+<td style="font-weight:500">${r.cliente}</td>
+<td><span class="tag t-tierra">${r.casa}</span></td>
+<td>${fd(r.ci)}</td>
+<td style="text-align:center">${r.noches}</td>
+<td><span class="tag ${r.estado==='Cobrado'?'t-ok':r.estado==='Al check-in'?'t-warn':'t-danger'}">${r.estado}</span></td>
+<td style="color:${r.saldo==='—'?'var(--verde)':'#C00000'};font-weight:500">${r.saldo}</td>
+<td><button class="btn xs" onclick="editRes(${r.id})"><i class="fa fa-edit"></i></button></td>
+</tr>`).join('');
+const pend=d.reservas.filter(r=>r.estado==='Pendiente'||r.estado==='Al check-in');
+
+document.getElementById('tb-inicio-saldos').innerHTML=pend.slice(0,6).map(r=>`<tr>
+<td style="font-weight:500;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.cliente}</td>
+<td style="font-size:10px"><span class="tag t-tierra">${r.casa}</span></td>
+<td style="color:#C00000;font-weight:500">${r.saldo}</td>
+<td><button class="btn xs" onclick="editRes(${r.id})"><i class="fa fa-edit"></i></button></td>
+</tr>`).join('');
+const casas=['Casa Bodega','Casa Deck','Casa Huerta','Suite Huerta','Casa Principal'];
+const nts=casas.map(c=>d.reservas.filter(r=>r.casa===c).reduce((a,r)=>a+r.noches,0));
+const mx=Math.max(...nts,1);
+document.getElementById('inicio-ocu').innerHTML=casas.map((c,i)=>`
+<div class="bar-item"><div class="bar-label"><span>${c}</span><span>${nts[i]} noches</span></div>
+<div class="bar-track"><div class="bar-fill" style="width:${Math.round(nts[i]/mx*100)}%;background:${CC[c]}"></div></div></div>`).join('');
+}
+
+// FRONT DESK
+let fdY=2026,fdM=9,fdV='grid';
+const MESES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const DS=['D','L','M','X','J','V','S'];
+function fdPrev(){fdM--;if(fdM<0){fdM=11;fdY--;}renderFD();}
+function fdNext(){fdM++;if(fdM>11){fdM=0;fdY++;}renderFD();}
+function setFdV(v){fdV=v;renderFD();}
+function renderFD(){
+const d=getData();
+document.getElementById('fd-label').textContent=MESES[fdM]+' '+fdY;
+document.getElementById('btn-vg').className='btn sm'+(fdV==='grid'?' primary':'');
+document.getElementById('btn-vl').className='btn sm'+(fdV==='list'?' primary':'');
+document.getElementById('fd-grid-v').style.display=fdV==='grid'?'block':'none';
+document.getElementById('fd-list-v').style.display=fdV==='list'?'block':'none';
+if(fdV==='grid')renderFDGrid(d);else renderFDList(d);
+}
+function renderFDGrid(d){
+const dim=new Date(fdY,fdM+1,0).getDate();
+const today=new Date().toISOString().split('T')[0];
+const ym=fdY+'-'+String(fdM+1).padStart(2,'0');
+const casas=['Casa Bodega','Casa Deck','Casa Huerta','Suite Huerta','Casa Principal'];
+// Header
+let hdr='<div class="fd-house-h">CASA</div>';
+for(let i=1;i<=dim;i++){
+const ds=ym+'-'+String(i).padStart(2,'0');
+const dow=new Date(ds).getDay();
+const isT=ds===today;
+hdr+=`<div class="fd-day-h${isT?' today':''}">${i}<br><span style="font-size:8px;opacity:.7">${DS[dow]}</span></div>`;
+}
+document.getElementById('fd-hdr').innerHTML=hdr;
+// Body
+let body='';
+casas.forEach(casa=>{
+const res=d.reservas.filter(r=>{
+if(!r.ci||!r.co)return false;
+return r.casa===casa&&new Date(r.ci)<=new Date(fdY,fdM+1,0)&&new Date(r.co)>=new Date(fdY,fdM,1);
+});
+let cells='';
+for(let i=1;i<=dim;i++){
+const ds=ym+'-'+String(i).padStart(2,'0');
+const dow=new Date(ds).getDay();
+const isT=ds===today,isW=dow===0||dow===6;
+cells+=`<div class="fd-cell${isT?' today':isW?' weekend':''}" ></div>`;
+}
+body+=`<div class="fd-row"><div class="fd-house">${casa}</div><div class="fd-days" id="fdd-${casa.replace(/ /g,'-')}">${cells}</div></div>`;
+});
+document.getElementById('fd-body').innerHTML=body;
+// Bloques
+const cw=100/dim;
+casas.forEach(casa=>{
+const res=d.reservas.filter(r=>r.casa===casa&&r.ci&&r.co&&new Date(r.ci)<=new Date(fdY,fdM+1,0)&&new Date(r.co)>=new Date(fdY,fdM,1));
+const cont=document.getElementById('fdd-'+casa.replace(/ /g,'-'));
+if(!cont)return;
+cont.style.position='relative';
+res.forEach(r=>{
+const s=new Date(Math.max(new Date(r.ci),new Date(fdY,fdM,1)));
+const e=new Date(Math.min(new Date(r.co),new Date(fdY,fdM+1,0)));
+const sd=s.getDate(),ed=e.getDate();
+const span=ed-sd+(new Date(r.co)>new Date(fdY,fdM+1,0)?0:0);
+const b=document.createElement('div');
+b.className='fd-block';
+b.style.left='calc('+((sd-1)*cw)+'% + 2px)';
+b.style.width='calc('+((ed-sd+1)*cw)+'% - 4px)';
+b.style.background=CC[casa]||'#7B2D42';
+b.style.opacity=r.estado==='Cobrado'?'1':'0.72';
+b.title=r.cliente+' · '+fd(r.ci)+'→'+fd(r.co)+' · '+r.estado;
+b.textContent=r.cliente.split(',')[0];
+b.onclick=()=>editRes(r.id);
+cont.appendChild(b);
+});
+});
+}
+function renderFDList(d){
+document.getElementById('tb-fd-list').innerHTML=d.reservas.map(r=>`<tr>
+<td style="font-weight:500">${r.cliente}</td><td><span class="tag t-tierra">${r.casa}</span></td>
+<td>${fd(r.ci)}</td><td>${fd(r.co)}</td><td style="text-align:center">${r.noches}</td><td style="text-align:center">${r.pax}</td>
+<td style="text-align:right;font-weight:500">USD ${r.total.toLocaleString()}</td>
+<td style="font-size:11px;color:var(--g3)">${r.cobrado}</td>
+<td style="font-weight:500;color:${r.saldo==='—'?'var(--verde)':'#C00000'}">${r.saldo}</td>
+<td style="font-size:11px">${r.cuenta}</td>
+<td><span class="tag ${r.estado==='Cobrado'?'t-ok':r.estado==='Al check-in'?'t-warn':'t-danger'}">${r.estado}</span></td>
+<td style="display:flex;gap:4px">
+<button class="btn xs" onclick="editRes(${r.id})"><i class="fa fa-edit"></i></button>
+<button class="btn xs danger" onclick="delRes(${r.id})"><i class="fa fa-trash"></i></button>
+</td></tr>`).join('');
+}
+
+// RESERVAS
+function renderReservas(){
+const d=getData();
+const q=(document.getElementById('s-res')||{}).value||'';
+const fe=(document.getElementById('f-rest')||{}).value||'';
+const fc=(document.getElementById('f-resc')||{}).value||'';
+const list=d.reservas.filter(r=>(r.cliente.toLowerCase().includes(q.toLowerCase())||r.casa.toLowerCase().includes(q.toLowerCase()))&&(!fe||r.estado===fe)&&(!fc||r.casa===fc));
+document.getElementById('tb-res').innerHTML=list.map(r=>`<tr>
+<td style="font-weight:500">${r.cliente}</td><td><span class="tag t-tierra">${r.casa}</span></td>
+<td>${fd(r.ci)}</td><td>${fd(r.co)}</td><td style="text-align:center">${r.noches}</td><td style="text-align:center">${r.pax}</td>
+<td style="text-align:right;font-weight:500">USD ${r.total.toLocaleString()}</td>
+<td style="font-size:11px;color:var(--g3)">${r.cobrado}</td>
+<td style="font-weight:500;color:${r.saldo==='—'?'var(--verde)':'#C00000'}">${r.saldo}</td>
+<td style="font-size:11px">${r.cuenta}</td>
+<td><span class="tag ${r.estado==='Cobrado'?'t-ok':r.estado==='Al check-in'?'t-warn':'t-danger'}">${r.estado}</span></td>
+<td style="font-size:11px;color:var(--g3)">${r.origen}</td>
+<td style="font-size:11px;color:var(--g3);max-width:120px;overflow:hidden;text-overflow:ellipsis">${r.notas||''}</td>
+<td style="display:flex;gap:4px">
+<button class="btn xs" onclick="editRes(${r.id})"><i class="fa fa-edit"></i></button>
+<button class="btn xs danger" onclick="delRes(${r.id})"><i class="fa fa-trash"></i></button>
+</td></tr>`).join('');
+}
+
+let eRid=null;
+function editRes(id){
+const d=getData();const r=d.reservas.find(x=>x.id===id);if(!r)return;
+eRid=id;
+document.getElementById('er-nombre').textContent=r.cliente;
+document.getElementById('er-total').value=r.total;
+document.getElementById('er-tc').value=r.tc||'';
+document.getElementById('er-cobrado').value=r.cobrado;
+document.getElementById('er-saldo').value=r.saldo;
+document.getElementById('er-cuenta').value=r.cuenta;
+document.getElementById('er-est').value=r.estado;
+document.getElementById('er-notas').value=r.notas||'';
+openM('m-edit-res');
+}
+function guardarEditRes(){
+if(!eRid)return;
+const d=getData();const i=d.reservas.findIndex(x=>x.id===eRid);if(i<0)return;
+d.reservas[i].total=parseFloat(document.getElementById('er-total').value)||d.reservas[i].total;
+d.reservas[i].tc=document.getElementById('er-tc').value;
+d.reservas[i].cobrado=document.getElementById('er-cobrado').value;
+d.reservas[i].saldo=document.getElementById('er-saldo').value;
+d.reservas[i].cuenta=document.getElementById('er-cuenta').value;
+d.reservas[i].estado=document.getElementById('er-est').value;
+d.reservas[i].notas=document.getElementById('er-notas').value;
+setD(d);closeM('m-edit-res');
+renderReservas();renderFD();renderInicio();
+toast('✓ Cobros actualizados');
+}
+function guardarRes(){
+const d=getData();
+const ci=document.getElementById('r-ci').value,co=document.getElementById('r-co').value;
+const n=ci&&co?Math.round((new Date(co)-new Date(ci))/86400000):0;
+const r={id:Date.now(),cliente:document.getElementById('r-cli').value.trim(),pax:'x'+document.getElementById('r-pax').value,ci,co,noches:n,casa:document.getElementById('r-casa').value,total:parseFloat(document.getElementById('r-total').value)||0,cobrado:document.getElementById('r-cobrado').value,saldo:document.getElementById('r-saldo').value,cuenta:document.getElementById('r-cuenta').value,estado:document.getElementById('r-est').value,origen:document.getElementById('r-origen').value,notas:document.getElementById('r-notas').value};
+if(!r.cliente){toast('⚠ Nombre requerido');return;}
+d.reservas.push(r);setD(d);closeM('m-res');
+['r-cli','r-ci','r-co','r-total','r-cobrado','r-saldo','r-notas'].forEach(id=>{try{document.getElementById(id).value='';}catch(e){}});
+renderReservas();renderFD();renderInicio();toast('✓ Reserva guardada');
+}
+function delRes(id){if(!confirm('¿Eliminar?'))return;const d=getData();d.reservas=d.reservas.filter(r=>r.id!==id);setD(d);renderReservas();renderFD();renderInicio();toast('Eliminada');}
+
+// CLIENTES
+function renderClientes(){
+const d=getData();const q=(document.getElementById('s-cli')||{}).value||'';
+const list=d.clientes.filter(c=>c.nombre.toLowerCase().includes(q.toLowerCase()));
+document.getElementById('tb-cli').innerHTML=list.length?list.map((c,i)=>`<tr>
+<td><div style="display:flex;align-items:center;gap:7px"><div style="width:26px;height:26px;border-radius:50%;background:${avc(i)};color:#fff;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">${ini(c.nombre)}</div><span style="font-weight:500">${c.nombre}</span></div></td>
+<td style="font-size:11px">${c.email||'—'}</td><td style="font-size:11px">${c.tel||'—'}</td>
+<td>${c.ciudad||'—'}</td><td><span class="tag t-info">${c.origen}</span></td>
+<td style="text-align:center">${c.visitas||1}</td><td>${c.ultima||'—'}</td>
+<td style="font-size:11px;color:var(--g3)">${c.notas||''}</td>
+<td><button class="btn xs danger" onclick="delCli(${c.id})"><i class="fa fa-trash"></i></button></td></tr>`).join('')
+:'<tr><td colspan="9" style="text-align:center;color:var(--g3);padding:20px">Sin clientes cargados</td></tr>';
+}
+function guardarCli(){const d=getData();const c={id:Date.now(),nombre:document.getElementById('c-nom').value.trim(),email:document.getElementById('c-em').value,tel:document.getElementById('c-tel').value,ciudad:document.getElementById('c-ciu').value,origen:document.getElementById('c-ori').value,empresa:document.getElementById('c-emp').value,visitas:1,ultima:'—',notas:document.getElementById('c-not').value};if(!c.nombre){toast('⚠ Nombre requerido');return;}d.clientes.push(c);setD(d);closeM('m-cli');renderClientes();toast('✓ Cliente guardado');}
+function delCli(id){if(!confirm('¿Eliminar?'))return;const d=getData();d.clientes=d.clientes.filter(c=>c.id!==id);setD(d);renderClientes();}
+
+// VISITAS
+function renderVisitas(){
+const d=getData();
+document.getElementById('tb-vis').innerHTML=d.visitas.map(v=>`<tr>
+<td>${fd(v.fecha)}</td>
+<td><span class="tag ${v.tipo.includes('Almuerzo')?'t-vino':v.tipo.includes('Visita')?'t-info':'t-ok'}">${v.tipo}</span></td>
+<td style="font-weight:500">${v.cli||v.cliente||''}</td><td style="text-align:center">${v.pax}</td>
+<td>${v.hora||'—'}</td><td style="font-weight:500">${v.total||'—'}</td>
+<td style="font-size:11px;color:var(--g3)">${v.cob||v.cobrado||'—'}</td>
+<td><span class="tag ${(v.est||v.estado)==='Cobrado'?'t-ok':'t-gray'}">${v.est||v.estado}</span></td>
+<td style="font-size:11px;color:var(--g3)">${v.not||v.notas||''}</td>
+<td style="display:flex;gap:4px"><button class="btn xs" onclick="editVis(${v.id})"><i class="fa fa-edit"></i></button><button class="btn xs danger" onclick="delVis(${v.id})"><i class="fa fa-trash"></i></button></td></tr>`).join('');
+}
+function guardarVis(){
+  const d=getData();
+  const cli=document.getElementById('v-cli').value.trim();
+  if(!cli){toast('⚠ Nombre requerido');return;}
+  if(eVisId){
+    const i=d.visitas.findIndex(x=>x.id===eVisId);
+    if(i>=0){
+      d.visitas[i].cli=cli;
+      d.visitas[i].tipo=document.getElementById('v-tipo').value;
+      d.visitas[i].pax=document.getElementById('v-pax').value;
+      d.visitas[i].fecha=document.getElementById('v-fecha').value;
+      d.visitas[i].hora=document.getElementById('v-hora').value;
+      d.visitas[i].total=document.getElementById('v-total').value;
+      d.visitas[i].cob=document.getElementById('v-cob').value;
+      d.visitas[i].est=document.getElementById('v-est').value;
+      d.visitas[i].not=document.getElementById('v-not').value;
+    }
+    eVisId=null;setD(d);closeM('m-vis');renderVisitas();toast('✓ Booking actualizado');return;
+  }
+  const v={id:Date.now(),cli:cli,tipo:document.getElementById('v-tipo').value,pax:document.getElementById('v-pax').value,fecha:document.getElementById('v-fecha').value,hora:document.getElementById('v-hora').value,total:document.getElementById('v-total').value,cob:document.getElementById('v-cob').value,est:document.getElementById('v-est').value,not:document.getElementById('v-not').value};if(!v.cli){toast('⚠ Nombre requerido');return;}d.visitas.push(v);setD(d);closeM('m-vis');renderVisitas();toast('✓ Booking guardado');}
+function delVis(id){if(!confirm('¿Eliminar?'))return;const d=getData();d.visitas=d.visitas.filter(v=>v.id!==id);setD(d);renderVisitas();}
+let eVisId=null;
+function editVis(id){
+  const d=getData();const v=d.visitas.find(x=>x.id===id);if(!v)return;
+  eVisId=id;
+  document.getElementById('v-cli').value=v.cli||v.cliente||'';
+  document.getElementById('v-tipo').value=v.tipo||'Almuerzo maridaje';
+  document.getElementById('v-pax').value=v.pax||2;
+  document.getElementById('v-fecha').value=v.fecha||'';
+  document.getElementById('v-hora').value=v.hora||'';
+  document.getElementById('v-total').value=v.total||'';
+  document.getElementById('v-cob').value=v.cob||v.cobrado||'';
+  document.getElementById('v-est').value=v.est||v.estado||'Pendiente';
+  document.getElementById('v-not').value=v.not||v.notas||'';
+  openM('m-vis');
+}
+
+// FINANZAS
+const FIN_K='cy_fin_v1';
+function loadFin(){try{return JSON.parse(localStorage.getItem(FIN_K))||{ing:[],egr:[]};}catch(e){return{ing:[],egr:[]};}}
+function saveFin(d){localStorage.setItem(FIN_K,JSON.stringify(d));}
+const FUENTES=['Alojamiento','Visita guiada','Almuerzo maridaje','Venta de vinos','Ganadería','Otro'];
+const ECATS=['Personal / Sueldos','Insumos y limpieza','Insumos gastronómicos','Mantenimiento de casas','Reparación','Servicios (gas, luz, agua)','Comisiones OTA','Sanidad ganadería','Impuestos y cargas fiscales','Otro'];
+const ING_C={'Alojamiento':'#2D5A1B','Visita guiada':'#0F6E56','Almuerzo maridaje':'#3B6D11','Venta de vinos':'#7B2D42','Ganadería':'#633806','Otro':'#595959'};
+const EGR_C={'Personal / Sueldos':'#791F1F','Insumos y limpieza':'#A32D2D','Insumos gastronómicos':'#854F0B','Mantenimiento de casas':'#633806','Reparación':'#6B4226','Servicios (gas, luz, agua)':'#3C3489','Comisiones OTA':'#185FA5','Sanidad ganadería':'#27500A','Impuestos y cargas fiscales':'#444441','Otro':'#595959'};
+const MNAMES=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+let chartIng=null,chartEgr=null,chartEvol=null;
+let filIngM='',filEgrM='';
+
+function toNum(r,mon){
+  if(mon==='USD'){if(r.usd&&parseFloat(r.usd))return parseFloat(r.usd);if(r.ars&&parseFloat(r.ars)&&r.tc&&parseFloat(r.tc))return parseFloat(r.ars)/parseFloat(r.tc);return 0;}
+  if(r.ars&&parseFloat(r.ars))return parseFloat(r.ars);
+  if(r.usd&&parseFloat(r.usd)&&r.tc&&parseFloat(r.tc))return parseFloat(r.usd)*parseFloat(r.tc);
+  return 0;
+}
+function fmtM(n,mon){if(!n||n===0)return'—';n=Math.round(n);return(mon==='USD'?'USD ':'ARS ')+n.toLocaleString('es-AR');}
+function fdS(s){if(!s)return'—';const p=s.split('-');return p[2]+'/'+p[1]+'/'+p[0];}
+
+function renderFinanzas(){
+  const fin=loadFin();
+  const mon=(document.getElementById('fin-mon')||{}).value||'ARS';
+  const mesSel=(document.getElementById('fin-mes')||{}).value||'';
+
+  // Populate mes selector
+  const allM=[...new Set([...fin.ing,...fin.egr].map(r=>r.fecha.slice(0,7)))].sort().reverse();
+  const mSel=document.getElementById('fin-mes');
+  if(mSel){
+    const cur=mSel.value;
+    mSel.innerHTML='<option value="">Todo el año</option>'+allM.map(m=>{const[y,mo]=m.split('-');return`<option value="${m}"${m===cur?' selected':''}>${MNAMES[parseInt(mo)-1]} ${y}</option>`;}).join('');
+  }
+
+  const ingF=mesSel?fin.ing.filter(r=>r.fecha.startsWith(mesSel)):fin.ing;
+  const egrF=mesSel?fin.egr.filter(r=>r.fecha.startsWith(mesSel)):fin.egr;
+
+  const tI=ingF.reduce((a,r)=>a+toNum(r,mon),0);
+  const tE=egrF.reduce((a,r)=>a+toNum(r,mon),0);
+  const res=tI-tE;
+  const mg=tI?Math.round(res/tI*100):0;
+
+  // KPIs
+  document.getElementById('fin-kpis').innerHTML=[
+    {l:'Total ingresos',v:fmtM(tI,mon),s:ingF.length+' registros',c:'ok'},
+    {l:'Total egresos',v:fmtM(tE,mon),s:egrF.length+' registros',c:'danger'},
+    {l:'Resultado neto',v:(res>=0?'+':'')+fmtM(Math.abs(res),mon),s:res>=0?'superávit':'déficit',c:res>=0?'ok':'danger'},
+    {l:'Margen',v:(res>=0?'+':'')+mg+'%',s:res>=0?'rentabilidad positiva':'revisar estructura de costos',c:res>=0?'ok':'warn'},
+  ].map(k=>`<div class="kpi ${k.c}"><div class="kl">${k.l}</div><div class="kv">${k.v}</div><div class="ks">${k.s}</div></div>`).join('');
+
+  // Chart ingresos por fuente
+  const ingPF=FUENTES.map(f=>ingF.filter(r=>r.fuente===f).reduce((a,r)=>a+toNum(r,mon),0));
+  const ingLabels=FUENTES.filter((_,i)=>ingPF[i]>0);
+  const ingVals=ingPF.filter(v=>v>0);
+  if(chartIng)chartIng.destroy();
+  const cI=document.getElementById('chart-ing');
+  if(cI&&ingVals.length){
+    chartIng=new Chart(cI,{type:'doughnut',data:{labels:ingLabels,datasets:[{data:ingVals,backgroundColor:ingLabels.map(l=>ING_C[l]||'#639922'),borderWidth:0}]},options:{responsive:true,plugins:{legend:{position:'right',labels:{font:{size:11},boxWidth:12,padding:10}}}}});
+  } else if(cI){cI.parentElement.innerHTML='<div style="text-align:center;color:var(--g3);padding:30px;font-family:sans-serif;font-size:12px">Sin ingresos registrados</div>';}
+
+  // Chart egresos por categoría
+  const egrPC=ECATS.map(c=>egrF.filter(r=>r.cat===c).reduce((a,r)=>a+toNum(r,mon),0));
+  const egrLabels=ECATS.filter((_,i)=>egrPC[i]>0);
+  const egrVals=egrPC.filter(v=>v>0);
+  if(chartEgr)chartEgr.destroy();
+  const cE=document.getElementById('chart-egr');
+  if(cE&&egrVals.length){
+    chartEgr=new Chart(cE,{type:'doughnut',data:{labels:egrLabels,datasets:[{data:egrVals,backgroundColor:egrLabels.map(l=>EGR_C[l]||'#595959'),borderWidth:0}]},options:{responsive:true,plugins:{legend:{position:'right',labels:{font:{size:11},boxWidth:12,padding:10}}}}});
+  } else if(cE){cE.parentElement.innerHTML='<div style="text-align:center;color:var(--g3);padding:30px;font-family:sans-serif;font-size:12px">Sin egresos registrados</div>';}
+
+  // Chart evolución mensual
+  const mesesAll=[...new Set([...fin.ing,...fin.egr].map(r=>r.fecha.slice(0,7)))].sort();
+  if(chartEvol)chartEvol.destroy();
+  const cEv=document.getElementById('chart-evol');
+  if(cEv&&mesesAll.length){
+    const lbls=mesesAll.map(m=>{const[y,mo]=m.split('-');return MNAMES[parseInt(mo)-1]+' '+y;});
+    const dI=mesesAll.map(m=>Math.round(fin.ing.filter(r=>r.fecha.startsWith(m)).reduce((a,r)=>a+toNum(r,mon),0)));
+    const dE=mesesAll.map(m=>Math.round(fin.egr.filter(r=>r.fecha.startsWith(m)).reduce((a,r)=>a+toNum(r,mon),0)));
+    const dR=dI.map((v,i)=>v-dE[i]);
+    chartEvol=new Chart(cEv,{type:'bar',data:{labels:lbls,datasets:[
+      {label:'Ingresos',data:dI,backgroundColor:'#639922',borderRadius:4},
+      {label:'Egresos',data:dE,backgroundColor:'#A32D2D',borderRadius:4},
+      {label:'Resultado',data:dR,type:'line',borderColor:'#185FA5',backgroundColor:'rgba(55,138,221,.1)',fill:true,tension:0.3,pointRadius:4,pointBackgroundColor:'#185FA5'},
+    ]},options:{responsive:true,plugins:{legend:{position:'top',labels:{font:{size:11},boxWidth:12}}},scales:{y:{ticks:{font:{size:10},callback:v=>{const abs=Math.abs(v);return(v<0?'-':'')+(abs>=1000000?Math.round(abs/1000)+'k':abs.toLocaleString('es-AR'));}}},x:{ticks:{font:{size:10}}}}}});
+  } else if(cEv){cEv.parentElement.innerHTML='<div style="text-align:center;color:var(--g3);padding:30px;font-family:sans-serif;font-size:12px">Registrá ingresos y egresos para ver la evolución</div>';}
+
+  // Tabla flujo mensual
+  const mesesFlujo=[...new Set([...fin.ing,...fin.egr].map(r=>r.fecha.slice(0,7)))].sort().reverse();
+  document.getElementById('tb-flujo').innerHTML=mesesFlujo.length?mesesFlujo.map(m=>{
+    const[y,mo]=m.split('-');
+    const im=fin.ing.filter(r=>r.fecha.startsWith(m));
+    const em=fin.egr.filter(r=>r.fecha.startsWith(m));
+    const byF=f=>Math.round(im.filter(r=>r.fuente===f).reduce((a,r)=>a+toNum(r,mon),0));
+    const tIm=Math.round(im.reduce((a,r)=>a+toNum(r,mon),0));
+    const tEm=Math.round(em.reduce((a,r)=>a+toNum(r,mon),0));
+    const rm=tIm-tEm;
+    const mgm=tIm?Math.round(rm/tIm*100):0;
+    return`<tr>
+    <td style="font-weight:500;white-space:nowrap">${MNAMES[parseInt(mo)-1]} ${y}</td>
+    <td style="text-align:right">${byF('Alojamiento')?fmtM(byF('Alojamiento'),mon):'—'}</td>
+    <td style="text-align:right">${byF('Visita guiada')?fmtM(byF('Visita guiada'),mon):'—'}</td>
+    <td style="text-align:right">${byF('Almuerzo maridaje')?fmtM(byF('Almuerzo maridaje'),mon):'—'}</td>
+    <td style="text-align:right">${byF('Venta de vinos')?fmtM(byF('Venta de vinos'),mon):'—'}</td>
+    <td style="text-align:right">${byF('Ganadería')?fmtM(byF('Ganadería'),mon):'—'}</td>
+    <td style="text-align:right">${byF('Otro')?fmtM(byF('Otro'),mon):'—'}</td>
+    <td style="text-align:right;font-weight:600;color:#27500A">${fmtM(tIm,mon)}</td>
+    <td style="text-align:right;font-weight:600;color:#791F1F">${fmtM(tEm,mon)}</td>
+    <td style="text-align:right;font-weight:600;color:${rm>=0?'#27500A':'#791F1F'}">${rm>=0?'+':''}${fmtM(Math.abs(rm),mon)}</td>
+    <td style="text-align:right"><span style="font-size:10px;padding:2px 7px;border-radius:99px;background:${rm>=0?'#EAF3DE':'#FCEBEB'};color:${rm>=0?'#27500A':'#791F1F'};font-weight:500">${mgm}%</span></td>
+    </tr>`;
+  }).join(''):'<tr><td colspan="11" style="text-align:center;color:var(--g3);padding:20px">Registrá ingresos y egresos para ver el flujo</td></tr>';
+
+  // Ing filter meses
+  const ingMeses=[...new Set(fin.ing.map(r=>r.fecha.slice(0,7)))].sort().reverse();
+  document.getElementById('fil-ing-meses').innerHTML=`<button style="font-size:10px;padding:2px 8px;border-radius:99px;border:0.5px solid var(--borde);background:${filIngM===''?'var(--g1)':'transparent'};color:${filIngM===''?'#fff':'var(--g3)'};cursor:pointer" onclick="setFilIng('')">Todos</button>`+ingMeses.map(m=>{const[y,mo]=m.split('-');return`<button style="font-size:10px;padding:2px 8px;border-radius:99px;border:0.5px solid var(--borde);background:${filIngM===m?'var(--g1)':'transparent'};color:${filIngM===m?'#fff':'var(--g3)'};cursor:pointer" onclick="setFilIng('${m}')">${MNAMES[parseInt(mo)-1]} ${y}</button>`;}).join('');
+
+  const ingList=filIngM?fin.ing.filter(r=>r.fecha.startsWith(filIngM)):[...fin.ing].sort((a,b)=>b.fecha.localeCompare(a.fecha));
+  document.getElementById('tb-ing').innerHTML=ingList.length?ingList.map(r=>`<tr>
+    <td style="white-space:nowrap;font-size:11px">${fdS(r.fecha)}</td>
+    <td><span style="font-size:10px;padding:2px 7px;border-radius:99px;background:#EAF3DE;color:#27500A;font-weight:500">${r.fuente}</span></td>
+    <td style="font-weight:500;font-size:12px">${r.det||'—'}</td>
+    <td style="font-size:11px;color:var(--g3)">${r.sec||'—'}</td>
+    <td style="text-align:right;color:#27500A;font-weight:500;font-size:11px">${r.ars?'ARS '+parseFloat(r.ars).toLocaleString('es-AR'):'—'}</td>
+    <td style="text-align:right;color:#0C447C;font-weight:500;font-size:11px">${r.usd?'USD '+parseFloat(r.usd).toLocaleString('es-AR'):'—'}</td>
+    <td style="font-size:11px;color:var(--g3)">${r.cuenta||'—'}</td>
+    <td><button class="btn xs danger" onclick="delIng(${r.id})"><i class="fa fa-trash"></i></button></td></tr>`).join('')
+  :'<tr><td colspan="8" style="text-align:center;color:var(--g3);padding:16px;font-size:12px">Sin ingresos — usá el botón + para agregar</td></tr>';
+
+  // Egr filter meses
+  const egrMeses=[...new Set(fin.egr.map(r=>r.fecha.slice(0,7)))].sort().reverse();
+  document.getElementById('fil-egr-meses').innerHTML=`<button style="font-size:10px;padding:2px 8px;border-radius:99px;border:0.5px solid var(--borde);background:${filEgrM===''?'var(--g1)':'transparent'};color:${filEgrM===''?'#fff':'var(--g3)'};cursor:pointer" onclick="setFilEgr('')">Todos</button>`+egrMeses.map(m=>{const[y,mo]=m.split('-');return`<button style="font-size:10px;padding:2px 8px;border-radius:99px;border:0.5px solid var(--borde);background:${filEgrM===m?'var(--g1)':'transparent'};color:${filEgrM===m?'#fff':'var(--g3)'};cursor:pointer" onclick="setFilEgr('${m}')">${MNAMES[parseInt(mo)-1]} ${y}</button>`;}).join('');
+
+  const egrList=filEgrM?fin.egr.filter(r=>r.fecha.startsWith(filEgrM)):[...fin.egr].sort((a,b)=>b.fecha.localeCompare(a.fecha));
+  document.getElementById('tb-egr').innerHTML=egrList.length?egrList.map(r=>`<tr>
+    <td style="white-space:nowrap;font-size:11px">${fdS(r.fecha)}</td>
+    <td><span style="font-size:10px;padding:2px 7px;border-radius:99px;background:#FCEBEB;color:#791F1F;font-weight:500;white-space:nowrap">${r.cat}</span></td>
+    <td style="font-weight:500;font-size:12px">${r.desc||'—'}</td>
+    <td style="font-size:11px;color:var(--g3)">${r.sec||'—'}</td>
+    <td style="text-align:right;color:#791F1F;font-weight:500;font-size:11px">${r.ars?'ARS '+parseFloat(r.ars).toLocaleString('es-AR'):'—'}</td>
+    <td style="text-align:right;color:#0C447C;font-weight:500;font-size:11px">${r.usd?'USD '+parseFloat(r.usd).toLocaleString('es-AR'):'—'}</td>
+    <td><button class="btn xs danger" onclick="delEgr(${r.id})"><i class="fa fa-trash"></i></button></td></tr>`).join('')
+  :'<tr><td colspan="7" style="text-align:center;color:var(--g3);padding:16px;font-size:12px">Sin egresos — usá el botón + para agregar</td></tr>';
+
+  // Saldos pendientes
+  const ps=[
+    {c:'Eichelmann, Maria Emilia',ca:'Casa Principal',ci:'12/01/2027',t:'USD 10.350',co:'ARS 4.425.000',s:'USD 7.245',cu:'Mercado Pago CY'},
+    {c:'Salguero, Silvana',ca:'Casa Principal',ci:'21/11/2026',t:'USD 1.998',co:'ARS 852.000',s:'USD 1.398',cu:'Mercado Pago CY'},
+    {c:'Lisanti, Luis',ca:'Casa Deck',ci:'25/10/2026',t:'USD 1.400',co:'—',s:'USD 1.400',cu:'Coordinar'},
+    {c:'Flia Evans, Gwion',ca:'Casa Bodega',ci:'20/10/2026',t:'USD 940',co:'—',s:'USD 940',cu:'Al check-in'},
+    {c:'Comtesse, Tanya',ca:'Casa Bodega',ci:'30/12/2026',t:'USD 672',co:'USD 288',s:'USD 672',cu:'WISE MY'},
+    {c:'Lezcano, Simon',ca:'Suite Huerta',ci:'14/10/2026',t:'USD 648',co:'—',s:'USD 648',cu:'Operador'},
+    {c:'Barreiro, Anibal',ca:'Casa Deck',ci:'05/02/2027',t:'USD 840',co:'USD 250',s:'USD 590',cu:'Galicia USD MY'},
+    {c:'Pura aventura, Durbin',ca:'Casa Deck',ci:'30/01/2027',t:'USD 780',co:'USD 590',s:'USD 190',cu:'WISE MY'},
+  ];
+  const tbP=document.getElementById('tb-pend');
+  if(tbP)tbP.innerHTML=psList.map(p=>`<tr><td style="font-weight:500">${p.c}</td><td><span class="tag t-tierra">${p.ca}</span></td><td>${p.ci}</td><td>${p.t}</td><td style="font-size:11px;color:var(--g3)">${p.co}</td><td style="font-weight:600;color:#C00000">${p.s}</td><td style="font-size:11px">${p.cu}</td></tr>`).join('');
+const flujo=[
+{m:'Jun 2026',a:0,al:343,v:0,vi:0,o:0,tc:1400,p:0},
+{m:'Oct 2026',a:372,al:0,v:0,vi:0,o:0,tc:1405,p:2988},
+{m:'Nov 2026',a:600,al:0,v:0,vi:0,o:0,tc:1420,p:1398},
+{m:'Dic 2026',a:288,al:0,v:0,vi:0,o:0,tc:0,p:672},
+{m:'Ene 2027',a:4475,al:0,v:0,vi:0,o:0,tc:1413,p:7435},
+{m:'Feb 2027',a:250,al:0,v:0,vi:0,o:0,tc:0,p:590},
+{m:'Mar 2027',a:0,al:0,v:0,vi:0,o:0,tc:0,p:0},
+{m:'Abr 2027',a:0,al:0,v:0,vi:0,o:0,tc:0,p:0},
+];
+document.getElementById('tb-flujo').innerHTML=flujo.map(f=>{const t=f.a+f.al+f.v+f.vi+f.o;return`<tr>
+<td style="font-weight:500">${f.m}</td>
+<td style="text-align:right">${f.a?'USD '+f.a.toLocaleString():'—'}</td>
+<td style="text-align:right">${f.al?'USD '+f.al.toLocaleString():'—'}</td>
+<td style="text-align:right">${f.v?'USD '+f.v.toLocaleString():'—'}</td>
+<td style="text-align:right">${f.vi?'USD '+f.vi.toLocaleString():'—'}</td>
+<td style="text-align:right">${f.o?'USD '+f.o.toLocaleString():'—'}</td>
+<td style="text-align:right;font-weight:600;color:var(--verde)">USD ${t.toLocaleString()}</td>
+<td style="text-align:right">${f.tc||'—'}</td>
+<td style="text-align:right">${f.tc?'ARS '+(t*f.tc).toLocaleString():'—'}</td>
+<td style="text-align:right;color:${f.p?'#C00000':'var(--verde)'}">${f.p?'USD '+f.p.toLocaleString():'✓'}</td>
+</tr>`;}).join('');
+const psList=[
+{c:'Eichelmann, Maria Emilia',ca:'Casa Principal',ci:'12/01/2027',t:'USD 10.350',co:'ARS 4.425.000',s:'USD 7.245',cu:'Mercado Pago CY'},
+{c:'Salguero, Silvana',ca:'Casa Principal',ci:'21/11/2026',t:'USD 1.998',co:'ARS 852.000',s:'USD 1.398',cu:'Mercado Pago CY'},
+{c:'Lisanti, Luis',ca:'Casa Deck',ci:'25/10/2026',t:'USD 1.400',co:'—',s:'USD 1.400',cu:'Coordinar'},
+{c:'Flia Evans, Gwion',ca:'Casa Bodega',ci:'20/10/2026',t:'USD 940',co:'—',s:'USD 940',cu:'Al check-in'},
+{c:'Comtesse, Tanya',ca:'Casa Bodega',ci:'30/12/2026',t:'USD 672',co:'USD 288',s:'USD 672',cu:'WISE MY'},
+{c:'Lezcano, Simon',ca:'Suite Huerta',ci:'14/10/2026',t:'USD 648',co:'—',s:'USD 648',cu:'Operador'},
+{c:'Barreiro, Anibal',ca:'Casa Deck',ci:'05/02/2027',t:'USD 840',co:'USD 250',s:'USD 590',cu:'Galicia USD MY'},
+{c:'Pura aventura, Durbin',ca:'Casa Deck',ci:'30/01/2027',t:'USD 780',co:'USD 590',s:'USD 190',cu:'WISE MY'},
+];
+document.getElementById('tb-pend').innerHTML=psList.map(p=>`<tr>
+<td style="font-weight:500">${p.c}</td><td><span class="tag t-tierra">${p.ca}</span></td>
+<td>${p.ci}</td><td>${p.t}</td><td style="font-size:11px;color:var(--g3)">${p.co}</td>
+<td style="font-weight:600;color:#C00000">${p.s}</td><td style="font-size:11px">${p.cu}</td></tr>`).join('');
+}
+
+
+
+function setFilIng(m){filIngM=m;renderFinanzas();}
+function setFilEgr(m){filEgrM=m;renderFinanzas();}
+function guardarIng(){
+  const fecha=document.getElementById('fi-fecha').value;
+  if(!fecha){toast('⚠ Fecha requerida');return;}
+  const fin=loadFin();
+  const maxId=Math.max(0,...fin.ing.map(r=>r.id));
+  fin.ing.push({id:maxId+1,fecha,fuente:document.getElementById('fi-fuente').value,det:document.getElementById('fi-det').value,sec:document.getElementById('fi-sec').value,ars:document.getElementById('fi-ars').value,usd:document.getElementById('fi-usd').value,tc:document.getElementById('fi-tc').value,cuenta:document.getElementById('fi-cuenta').value,comp:document.getElementById('fi-comp').value,not:document.getElementById('fi-not').value});
+  saveFin(fin);
+  ['fi-fecha','fi-det','fi-ars','fi-usd','fi-tc','fi-comp','fi-not'].forEach(id=>document.getElementById(id).value='');
+  closeM('m-fin-ing');renderFinanzas();toast('✓ Ingreso registrado');
+}
+function guardarEgr(){
+  const fecha=document.getElementById('fe-fecha').value;
+  const desc=document.getElementById('fe-desc').value.trim();
+  if(!fecha||!desc){toast('⚠ Fecha y descripción requeridas');return;}
+  const fin=loadFin();
+  const maxId=Math.max(0,...fin.egr.map(r=>r.id));
+  fin.egr.push({id:maxId+1,fecha,cat:document.getElementById('fe-cat').value,desc,sec:document.getElementById('fe-sec').value,area:document.getElementById('fe-area').value||'',ars:document.getElementById('fe-ars').value,usd:document.getElementById('fe-usd').value,tc:document.getElementById('fe-tc').value,prov:document.getElementById('fe-prov').value,comp:document.getElementById('fe-comp').value,not:document.getElementById('fe-not').value});
+  saveFin(fin);
+  ['fe-fecha','fe-desc','fe-ars','fe-usd','fe-tc','fe-prov','fe-comp','fe-not','fe-area'].forEach(id=>document.getElementById(id).value='');
+  closeM('m-fin-egr');renderFinanzas();toast('✓ Egreso registrado');
+}
+function delIng(id){if(!confirm('¿Eliminar?'))return;const fin=loadFin();fin.ing=fin.ing.filter(r=>r.id!==id);saveFin(fin);renderFinanzas();}
+function delEgr(id){if(!confirm('¿Eliminar?'))return;const fin=loadFin();fin.egr=fin.egr.filter(r=>r.id!==id);saveFin(fin);renderFinanzas();}
+
+// VINOS
+function renderVinos(){
+const d=getData();
+document.getElementById('tb-vinos').innerHTML=d.vinos.map((v,i)=>{
+const al=v.s!=null?(v.s<v.m?'⚠ Reponer':'✓ OK'):'Pendiente';
+const at=v.s==null?'t-gray':v.s<v.m?'t-danger':'t-ok';
+return`<tr>
+<td style="text-align:center;color:var(--g3)">${i+1}</td>
+<td><input class="vi-inp" value="${v.v}" onchange="eVino(${v.id},'v',this.value)" style="width:140px"></td>
+<td><input class="vi-inp" type="number" value="${v.a||''}" onchange="eVino(${v.id},'a',this.value)" style="width:65px"></td>
+<td><input class="vi-inp" value="${v.l||''}" onchange="eVino(${v.id},'l',this.value)" style="width:110px"></td>
+<td><input class="vi-inp" type="number" value="${v.s??''}" placeholder="—" onchange="eVino(${v.id},'s',this.value)" style="width:55px;background:#EBF3FB;border-color:#7EB8E0;color:#0070C0"></td>
+<td><input class="vi-inp" type="number" value="${v.m}" onchange="eVino(${v.id},'m',this.value)" style="width:55px"></td>
+<td><input class="vi-inp" type="number" value="${v.c??''}" placeholder="—" onchange="eVino(${v.id},'c',this.value)" style="width:65px"></td>
+<td><input class="vi-inp" type="number" value="${v.pd??''}" placeholder="—" onchange="eVino(${v.id},'pd',this.value)" style="width:65px"></td>
+<td><input class="vi-inp" type="number" value="${v.ps??''}" placeholder="—" onchange="eVino(${v.id},'ps',this.value)" style="width:65px"></td>
+<td><input class="vi-inp" type="number" value="${v.pe??''}" placeholder="—" onchange="eVino(${v.id},'pe',this.value)" style="width:65px"></td>
+<td><input class="vi-inp" type="number" value="${v.pc??''}" placeholder="—" onchange="eVino(${v.id},'pc',this.value)" style="width:65px"></td>
+<td><span class="tag ${at}">${al}</span></td>
+<td><button class="btn xs danger" onclick="delVino(${v.id})"><i class="fa fa-trash"></i></button></td></tr>`;
+}).join('');
+}
+function eVino(id,k,val){const d=getData();const i=d.vinos.findIndex(v=>v.id===id);if(i<0)return;const num=['s','m','c','pd','ps','pe','pc','a'];d.vinos[i][k]=num.includes(k)?(val===''?null:parseFloat(val)):val;setD(d);}
+function guardarVino(){const d=getData();const v={id:Date.now(),v:document.getElementById('vi-var').value.trim(),a:parseInt(document.getElementById('vi-anio').value)||null,l:document.getElementById('vi-linea').value,s:parseInt(document.getElementById('vi-stock').value)||0,m:parseInt(document.getElementById('vi-min').value)||6,c:parseFloat(document.getElementById('vi-costo').value)||null,pd:parseFloat(document.getElementById('vi-pd').value)||null,ps:parseFloat(document.getElementById('vi-ps').value)||null,pe:parseFloat(document.getElementById('vi-pe').value)||null,pc:parseFloat(document.getElementById('vi-pc').value)||null,n:document.getElementById('vi-not').value};if(!v.v){toast('⚠ Varietal requerido');return;}d.vinos.push(v);setD(d);closeM('m-vino');renderVinos();toast('✓ Varietal guardado');}
+function delVino(id){if(!confirm('¿Eliminar?'))return;const d=getData();d.vinos=d.vinos.filter(v=>v.id!==id);setD(d);renderVinos();}
+// CLUB DE VINOS
+const CLUB=[
+{n:'Isabel Noble',d:'Buenos Aires',t:'1126526614',e:'',tp:'Visita',nt:'oct 2021'},
+{n:'Martin Garcia Moron',d:'Comodoro Rivadavia',t:'2974191420',e:'',tp:'Almuerzo/ Cena',nt:'oct 2021'},
+{n:'Melisa Hernandez Osorio',d:'Rio Negro',t:'2984403588',e:'',tp:'Huésped',nt:'casa bodega oct 2021'},
+{n:'Camila Villar',d:'Buenos Aires',t:'1166301938',e:'',tp:'Huésped',nt:'casa deck oct 2021'},
+{n:'Cristian Amalfitano',d:'Buenos Aires',t:'1134295858',e:'',tp:'Huésped',nt:'casa deck oct 2021'},
+{n:'Andrea Laurino',d:'Buenos Aires',t:'1158895630',e:'',tp:'Huésped',nt:'casa bodega oct 2021'},
+{n:'Hector Nervi',d:'Bariloche',t:'2944413502',e:'',tp:'Huésped',nt:'casa deck nov 2021 - compro vinos'},
+{n:'Laura Cascardo',d:'Buenos Aires',t:'1161645376',e:'',tp:'Huésped',nt:'nov 2021 casa deck'},
+{n:'Michelle Mariano Kirihara',d:'Brasil',t:'5545999285959',e:'',tp:'Visita',nt:'dic 2021'},
+{n:'Carla',d:'Inglaterra',t:'447453299623',e:'',tp:'Almuerzo/ Cena',nt:'dic 2021'},
+{n:'Daniel Schurman',d:'Buenos Aires',t:'1144759133',e:'',tp:'Huésped',nt:'casa deck dic 2021'},
+{n:'Matilde Rinaldi',d:'España',t:'34622638193',e:'',tp:'Huésped',nt:'casa deck enero 2022'},
+{n:'Maximo Balza',d:'Argentina',t:'2235312619',e:'',tp:'Huésped',nt:'enero 2022 - compro vinos'},
+{n:'Lucia Marcone',d:'Buenos Aires',t:'1135812209',e:'luciajmarcone@gmail.com',tp:'Visita',nt:'enero 2022'},
+{n:'Sandro',d:'Brasil',t:'5547991971208',e:'',tp:'Huésped',nt:'enero 2023 compraron vinos'},
+{n:'Marina K',d:'Rusia',t:'79175454510',e:'',tp:'Huésped',nt:'enero 2023 casa principal'},
+{n:'Edwin Huang',d:'China',t:'8613622636599',e:'',tp:'',nt:'importador vinos China'},
+{n:'Dakota',d:'Estados Unidos',t:'18178794715',e:'',tp:'Visita',nt:'abril 2022'},
+{n:'Vladimir Povshenko',d:'Rusia',t:'79057773366',e:'',tp:'Almuerzo/ Cena',nt:'oct 2023'},
+{n:'Tyler (piloto)',d:'Estados Unidos',t:'12399106654',e:'',tp:'Huésped',nt:'casa principal nov 2023'},
+{n:'Jonas Adriaensens',d:'Bèlgica',t:'32485195339',e:'',tp:'Almuerzo/ Cena',nt:'nov 2023'},
+{n:'Kendra',d:'Estados Unidos',t:'19415869455',e:'',tp:'Almuerzo/ Cena',nt:'enero 2024'},
+{n:'Guillermo Marcos',d:'Uruguay',t:'59891200220',e:'guillermomarcos81@hotmail.com',tp:'Huésped',nt:'casa bodega'},
+{n:'Rita Kalbermatten',d:'Buenos Aires',t:'1144947707',e:'kalbermatten.rl@gmail.com',tp:'Huésped',nt:'feb 2024 casa deck'},
+{n:'Eirin Lien',d:'Noruega',t:'4748270536',e:'',tp:'Almuerzo/ Cena',nt:'feb 2024'},
+{n:'Sarah',d:'Holanda',t:'31627994686',e:'',tp:'Almuerzo/ Cena',nt:''},
+{n:'Demi',d:'Holanda',t:'31650453112',e:'',tp:'Almuerzo/ Cena',nt:'feb 2024'},
+{n:'Lis',d:'Dinamarca',t:'4561546707',e:'',tp:'Visita',nt:'feb 2024'},
+{n:'Mathilde Pinte',d:'Bèlgica',t:'32471400961',e:'',tp:'',nt:'sommelier'},
+{n:'Chris Bladon',d:'Inglaterra',t:'447702781023',e:'',tp:'Huésped',nt:'Pura Aventura'},
+{n:'Jim Buttery',d:'Inglaterra',t:'447476747105',e:'',tp:'Visita',nt:'marzo 2024'},
+{n:'Nick Van Lier',d:'Holanda',t:'31616645746',e:'',tp:'Visita',nt:'queria comprar vinos Europa'},
+{n:'Audrey',d:'Estados Unidos',t:'13659983092',e:'',tp:'Almuerzo/ Cena',nt:'mayo 2023'},
+{n:'Florence Rouquette',d:'Francia',t:'33680139687',e:'',tp:'Almuerzo/ Cena',nt:'dic 2024'},
+{n:'Sarah Lafleur',d:'Francia',t:'33651191706',e:'',tp:'Huésped',nt:''},
+{n:'Kyle Canepa',d:'Estados Unidos',t:'15617587863',e:'',tp:'Huésped',nt:'dic 2024'},
+{n:'Alicia Ortiz',d:'Estados Unidos',t:'19198244223',e:'',tp:'Huésped',nt:'dic 2024 casa deck'},
+{n:'Joe L',d:'Inglaterra',t:'447908128814',e:'',tp:'Huésped',nt:'agosto 2024'},
+{n:'Jenny Reid',d:'Inglaterra',t:'447989240364',e:'',tp:'Huésped',nt:'nov 2024 casa bodega'},
+{n:'Teresa Garlock',d:'Estados Unidos',t:'12392613999',e:'',tp:'Huésped',nt:'nov 2024'},
+{n:'Gregory Hall',d:'Estados Unidos',t:'17752244766',e:'',tp:'Huésped',nt:'nov 2025'},
+{n:'Gareth Williams',d:'Inglaterra',t:'447450285638',e:'',tp:'Visita',nt:'degus nov 2025'},
+{n:'Alister Huynh',d:'Australia',t:'61411632989',e:'',tp:'Visita',nt:'nov 2025'},
+{n:'Rogerio Urbano Feyh',d:'Brasil',t:'5548999038118',e:'rogerio@feyh.com.br',tp:'Huésped',nt:'casa deck'},
+{n:'Turgut Torkgoz',d:'Turquía',t:'905323133682',e:'t.tokgoz@oenotrian.com',tp:'Almuerzo/ Cena',nt:'tours premium gastronomia y vinos'},
+{n:'Esteban Armayor',d:'Alemania',t:'491714192504',e:'',tp:'Visita',nt:'nov 2025'},
+{n:'Johan Dettel',d:'Suecia',t:'46708760362',e:'johan.dettel@gmail.com',tp:'Huésped',nt:'enero 2026 casa huerta'},
+{n:'Herve Hamon',d:'Francia',t:'33608514004',e:'insrv27@gmail.com',tp:'Huésped',nt:'enero 2026 casa deck'},
+{n:'Christine Vermaak',d:'Reino Unido',t:'447472704581',e:'christine.e.vermaak@gmail.com',tp:'Huésped',nt:'casa deck'},
+{n:'Lotte Nash',d:'Inglaterra',t:'447387162219',e:'lottenash@jacadatravel.com',tp:'Visita',nt:'feb 2026'},
+{n:'Lorenzo Alvarez-Roos',d:'Estados Unidos',t:'15304143012',e:'',tp:'Huésped',nt:''},
+{n:'Jorgen Joval Dahl',d:'Noruega',t:'4792466616',e:'',tp:'Huésped',nt:'casa bodega enero 2026'},
+{n:'Martin Rauh',d:'Suiza',t:'41765644460',e:'',tp:'Visita',nt:''},
+{n:'Reinhard G',d:'Alemania',t:'491722085164',e:'',tp:'Visita',nt:'feb 2026'},
+{n:'Mark Mackintosh',d:'Holanda',t:'31611298942',e:'',tp:'Visita',nt:'sacaron fotos'},
+{n:'Della Watter',d:'Estados Unidos',t:'15616354039',e:'',tp:'Visita',nt:'marzo 2026'},
+{n:'Juan Retamal',d:'Chile',t:'56988890261',e:'',tp:'Almuerzo/ Cena',nt:'oct 2022'},
+{n:'Constanza Cristi',d:'Chile',t:'56954498328',e:'',tp:'Almuerzo/ Cena',nt:'abril 2023'},
+{n:'Maria Raquel',d:'Chile',t:'56994426396',e:'',tp:'Huésped',nt:'casa bodega feb 2023'},
+{n:'Francisco Bedeschi',d:'Chile',t:'56958023599',e:'',tp:'Huésped',nt:'nov 2024'},
+{n:'Silvia',d:'Chile',t:'56988165448',e:'',tp:'Huésped',nt:'casa deck Airbnb'},
+{n:'Nea Barends',d:'Chile',t:'56976690598',e:'',tp:'Almuerzo/ Cena',nt:'feb 2025'},
+{n:'Carolina Clerici',d:'Chile',t:'56995393552',e:'',tp:'Almuerzo/ Cena',nt:'feb 2025'},
+{n:'Raul Buenaventura',d:'Chile',t:'56966466367',e:'',tp:'Huésped',nt:''},
+{n:'Camila',d:'Chile',t:'56987879984',e:'',tp:'Almuerzo/ Cena',nt:'dic 2023'},
+{n:'Francisco Vega',d:'Chile',t:'56988261529',e:'',tp:'Almuerzo/ Cena',nt:'nov 2024'},
+{n:'Milagros Scavarda',d:'Chile',t:'56982998016',e:'mili@collectionms.com',tp:'Huésped',nt:'feb 2026 - Pata Lodge'},
+{n:'Guillermo Staudt',d:'Chile',t:'56998713329',e:'',tp:'Huésped',nt:'enero 2025 casa deck'},
+{n:'Alvaro Gaete',d:'Chile',t:'56973867359',e:'alvaro.gaete5@gmail.com',tp:'Almuerzo/ Cena',nt:'chile'},
+{n:'Sol Branciari',d:'Uruguay',t:'59895540365',e:'',tp:'Visita',nt:'nov 2021'},
+{n:'Martin Banquero',d:'Uruguay',t:'59895544443',e:'',tp:'Almuerzo/ Cena',nt:'feb 2022'},
+{n:'Daniel Garcia',d:'Uruguay',t:'59897093433',e:'',tp:'Visita',nt:'enero 2024'},
+{n:'Pamela OFarrel',d:'Uruguay',t:'59898678942',e:'',tp:'Visita',nt:'sep 2024'},
+{n:'Ines Amarante',d:'Uruguay',t:'59899362133',e:'',tp:'Almuerzo/ Cena',nt:'oct 2024'},
+{n:'Lara Robledo',d:'Uruguay',t:'59896987089',e:'lararobledo@gmail.com',tp:'',nt:'sommelier - interesa traer grupos'},
+{n:'Pedro Murakami',d:'Paraguay',t:'595985955500',e:'',tp:'Huésped',nt:'casa bodega y huerta'},
+{n:'Silvana de Martino',d:'Paraguay',t:'595982842380',e:'',tp:'Almuerzo/ Cena',nt:'enero 2025'},
+{n:'Veronica Castillo',d:'Paraguay',t:'595981467611',e:'',tp:'Almuerzo/ Cena',nt:'enero 2025'},
+{n:'Victor Cartes',d:'Paraguay',t:'595981173186',e:'',tp:'Visita',nt:'sunset oct 2025'},
+{n:'Federico Pedreros',d:'Colombia',t:'573206073611',e:'',tp:'Visita',nt:'mar 2023'},
+{n:'Livia Luppo',d:'Brasil',t:'5511995314760',e:'',tp:'Almuerzo/ Cena',nt:'dic 2022'},
+{n:'Vania',d:'Brasil',t:'5511952740034',e:'',tp:'Almuerzo/ Cena',nt:'feb 2023'},
+{n:'Mariana M',d:'Brasil',t:'5519994135910',e:'',tp:'Almuerzo/ Cena',nt:'enero 2023'},
+{n:'Patricia Nakami',d:'Brasil',t:'5511985750544',e:'',tp:'Huésped',nt:'casa bodega'},
+{n:'Rodrigo Contesini',d:'Brasil',t:'5541992329914',e:'',tp:'Huésped',nt:'enero 2025'},
+{n:'Federico Marsano',d:'Brasil',t:'5511984530475',e:'',tp:'Almuerzo/ Cena',nt:'enero 2025'},
+{n:'Silvana Pamplona',d:'Brasil',t:'5541999822899',e:'',tp:'Huésped',nt:'walk in'},
+{n:'Sandro Araujo',d:'Brasil',t:'5561982960007',e:'',tp:'Huésped',nt:'casa deck mar 2023'},
+{n:'Marcelo Wollermann',d:'Brasil',t:'5519998682178',e:'',tp:'Huésped',nt:'mar 2023 casa bodega'},
+{n:'Mariana Robles',d:'Buenos Aires',t:'1150512474',e:'',tp:'Visita',nt:'nov 2021'},
+{n:'Romina Conde',d:'Chubut',t:'2974010101',e:'',tp:'Almuerzo/ Cena',nt:'nov 2021'},
+{n:'Norberto Borzese',d:'Buenos Aires',t:'1149452029',e:'',tp:'Huésped',nt:'feb 2022'},
+{n:'Pilar Pegoraro',d:'Buenos Aires',t:'1131764100',e:'',tp:'Huésped',nt:'casa deck feb 2022'},
+{n:'Debora Maier',d:'Bariloche',t:'2944533508',e:'',tp:'Huésped',nt:'casa deck feb 2022'},
+{n:'Dani Abadi',d:'Buenos Aires',t:'1141669992',e:'',tp:'Huésped',nt:'casa deck feb 2022'},
+{n:'Violeta Ruiz',d:'Buenos Aires',t:'1140697887',e:'',tp:'Huésped',nt:'casa deck y bodega feb 2022'},
+{n:'Matias Dominguez',d:'Buenos Aires',t:'1162025911',e:'',tp:'Huésped',nt:'casa deck feb 2022 compraron vinos'},
+{n:'Rita Meyer',d:'Bariloche',t:'2944532260',e:'',tp:'Huésped',nt:'casa deck oct 2022'},
+{n:'Sergio Quinoni',d:'Bariloche',t:'2944605513',e:'sergio10.quinones@gmail.com',tp:'Huésped',nt:'oct 2022'},
+{n:'Alex Broderick',d:'Buenos Aires',t:'1121688208',e:'',tp:'Huésped',nt:'casa bodega dic 2022'},
+{n:'Melisa Mantello',d:'Buenos Aires',t:'1157566354',e:'mmantello@gmail.com',tp:'Huésped',nt:'enero 2023'},
+{n:'Daniel Rosemberg',d:'Buenos Aires',t:'1149605356',e:'',tp:'Huésped',nt:'casa deck enero 2023'},
+{n:'Julian Randle',d:'Buenos Aires',t:'1150400941',e:'',tp:'Huésped',nt:'casa principal enero 2023'},
+{n:'Ezequiel Nanyo',d:'Buenos Aires',t:'1161026479',e:'',tp:'Huésped',nt:'casa bodega feb 2023'},
+{n:'Monica Comabella',d:'Rosario',t:'3413021704',e:'',tp:'Huésped',nt:'casa deck feb 2023'},
+{n:'Andrea Hirsch',d:'Buenos Aires',t:'1144781241',e:'',tp:'Huésped',nt:'abril 2023 casa bodega'},
+{n:'Beta Nobile',d:'Bariloche',t:'2944303757',e:'',tp:'Huésped',nt:'casa deck'},
+{n:'Aldo Fenoglio',d:'Bariloche',t:'2944536087',e:'',tp:'Huésped',nt:'enero 2025'},
+{n:'Graciela Toso',d:'Buenos Aires',t:'1140799940',e:'gra_toar@yahoo.com.ar',tp:'Huésped',nt:'nov 2024 casa bodega y deck'},
+{n:'Guillermo Moralez',d:'Buenos Aires',t:'1138341118',e:'gdmo1968@gmail.com',tp:'Huésped',nt:'nov 2024 casa deck'},
+{n:'Patricia Johansen',d:'Rosario',t:'3416215205',e:'',tp:'Huésped',nt:'dic 2024 casa bodega'},
+{n:'Leticia Rouges',d:'Buenos Aires',t:'1149288598',e:'',tp:'Huésped',nt:'dic 2024 casa bodega'},
+{n:'Marina Carballo',d:'Rosario',t:'3416801534',e:'',tp:'Huésped',nt:'oct 2024 casa deck'},
+{n:'Facundo Soto',d:'Buenos Aires',t:'1151077148',e:'',tp:'Huésped',nt:'oct 2024 casa huerta'},
+{n:'Macarena Alonso',d:'Buenos Aires',t:'2914123512',e:'',tp:'Huésped',nt:'oct 2024 casa bodega'},
+{n:'Elvira Borgaro',d:'Buenos Aires',t:'1145316723',e:'',tp:'Huésped',nt:'oct 2024 casa bodega'},
+{n:'Florencia Aguirre',d:'Buenos Aires',t:'1144700559',e:'',tp:'Huésped',nt:'oct 2024 casa deck'},
+{n:'Sebastian Vecchi',d:'Buenos Aires',t:'1168740385',e:'sebas.vecchi@gmail.com',tp:'Huésped',nt:'oct 2024 casa huerta'},
+{n:'Gabriela Alvarez',d:'Buenos Aires',t:'1131207017',e:'',tp:'Huésped',nt:'oct 2024 casa deck'},
+{n:'Paola Groppo',d:'Buenos Aires',t:'1150140049',e:'poliguana@gmail.com',tp:'Huésped',nt:'oct 2024 casa huerta'},
+{n:'Lucia Juarez',d:'Buenos Aires',t:'1157190771',e:'lucia-juarez@hotmail.com',tp:'Huésped',nt:'casa deck'},
+{n:'Alejandra Delgado',d:'Buenos Aires',t:'1162796336',e:'aleja20-04@hotmail.com',tp:'Huésped',nt:'oct 2024 casa huerta'},
+{n:'Federico Larriera',d:'Buenos Aires',t:'1133052969',e:'larrierafederico@gmail.com',tp:'Huésped',nt:'oct 2024 casa huerta'},
+{n:'Esteban Secchiari',d:'Buenos Aires',t:'1168839410',e:'',tp:'Huésped',nt:'enero 2025 casa deck'},
+{n:'Marcos Knowles',d:'Buenos Aires',t:'1151356713',e:'',tp:'Huésped',nt:'enero 2025 casa bodega'},
+{n:'Veronica Iriondo',d:'Buenos Aires',t:'1151472676',e:'',tp:'Huésped',nt:'enero 2025 casa bodega'},
+{n:'Julia Ines Apicella',d:'Buenos Aires',t:'1156584902',e:'',tp:'Huésped',nt:'enero 2025 casa deck'},
+{n:'Felicitas Fragueiro',d:'Buenos Aires',t:'1136002021',e:'',tp:'Huésped',nt:'feb 2025 casa bodega'},
+{n:'Nicolas Joaquin Repetto',d:'Buenos Aires',t:'1156011868',e:'',tp:'Huésped',nt:'casa bodega marzo 2025'},
+{n:'Angel Dure',d:'Buenos Aires',t:'1130872010',e:'',tp:'Huésped',nt:'marzo 2025 casa deck'},
+{n:'Daniel Briff',d:'Buenos Aires',t:'1131148553',e:'',tp:'Huésped',nt:'marzo 2025 casa deck'},
+{n:'Facundo Morales',d:'Buenos Aires',t:'1139482764',e:'',tp:'Huésped',nt:'mayo 2025 casa deck'},
+{n:'Elizabeth Janza',d:'Buenos Aires',t:'1155974552',e:'ejanza@yahoo.com.ar',tp:'Huésped',nt:'nov 2025'},
+{n:'Marcos Ermini',d:'Córdoba',t:'3513039159',e:'',tp:'Huésped',nt:''},
+{n:'Camila Contreras',d:'Buenos Aires',t:'1132017868',e:'',tp:'Huésped',nt:'nov 2025'},
+{n:'Fernan Dubie',d:'Buenos Aires',t:'1140723629',e:'',tp:'Huésped',nt:'dic 2025'},
+{n:'Ernesto Sesin',d:'Córdoba',t:'3584334685',e:'',tp:'Huésped',nt:'casa bodega'},
+{n:'Pablo Radice',d:'Buenos Aires',t:'1141458265',e:'pdradice@gmail.com',tp:'Huésped',nt:'casa bodega'},
+{n:'Eduardo Rinaldi',d:'Buenos Aires',t:'1165763756',e:'',tp:'Huésped',nt:'casa huerta'},
+{n:'Eugenia Laguna',d:'Buenos Aires',t:'1150381898',e:'',tp:'Huésped',nt:'casa deck'},
+{n:'Brian Burstein',d:'Buenos Aires',t:'1167240121',e:'',tp:'Huésped',nt:'casa bodega'},
+{n:'Alejo Santos',d:'Buenos Aires',t:'1155798178',e:'',tp:'Huésped',nt:'casa bodega'},
+{n:'Milagros Irastorza',d:'Buenos Aires',t:'1153270177',e:'',tp:'Huésped',nt:'casa bodega y huerta'},
+{n:'Marcelo Alexander',d:'Buenos Aires',t:'1149369100',e:'',tp:'Huésped',nt:'casa deck'},
+{n:'Mariana Mangione',d:'Chubut',t:'2804679148',e:'',tp:'Huésped',nt:'casa bodega y deck'},
+{n:'Rodrigo Rey',d:'Buenos Aires',t:'1154698827',e:'',tp:'Huésped',nt:'compraron vinos'},
+{n:'Pablo Estrada',d:'Buenos Aires',t:'1131190205',e:'',tp:'Huésped',nt:'casa bodega enero 2026'},
+{n:'Ignacio Ronco',d:'Buenos Aires',t:'2901611460',e:'',tp:'Huésped',nt:'casa deck enero 2026'},
+{n:'Cecilia Roca',d:'Buenos Aires',t:'1166580426',e:'',tp:'Huésped',nt:'casa huerta enero 2026'},
+{n:'Lucia Rey',d:'Buenos Aires',t:'1164462401',e:'reyluciaf@gmail.com',tp:'Huésped',nt:'casa huerta enero 2026'},
+{n:'Candelaria Carreras',d:'Córdoba',t:'3512408533',e:'',tp:'Huésped',nt:'suite huerta enero 2026'},
+{n:'Marie Florio',d:'Santa Cruz',t:'2966751405',e:'',tp:'Huésped',nt:'casa bodega enero 2026'},
+{n:'Ignacio Luparia',d:'Buenos Aires',t:'1154851239',e:'',tp:'Huésped',nt:'casa bodega enero 2026'},
+{n:'Nicolas Esquibel',d:'Buenos Aires',t:'1134281777',e:'experiencianicoesquibel@gmail.com',tp:'Huésped',nt:'abril 2026'},
+{n:'Javier Menajovsky',d:'Buenos Aires',t:'1144901828',e:'',tp:'Huésped',nt:'feb 2026 casa bodega'},
+{n:'Rodrigo Morales',d:'Buenos Aires',t:'1150487716',e:'',tp:'Huésped',nt:'feb 2026 casa deck'},
+{n:'Liliana Molas',d:'Buenos Aires',t:'1160478447',e:'',tp:'Huésped',nt:'casa huerta enero 2026'},
+{n:'Carla Gimbatti',d:'Buenos Aires',t:'1150608755',e:'',tp:'Huésped',nt:''},
+{n:'Ana Maria Mustapic',d:'Buenos Aires',t:'1144251573',e:'',tp:'Huésped',nt:'huesped y almuerzo'},
+{n:'Veronica de Estrada',d:'Buenos Aires',t:'1157664326',e:'',tp:'Almuerzo/ Cena',nt:'oct 2025'},
+{n:'Antonia Guerena',d:'Esquel',t:'2945696080',e:'',tp:'Almuerzo/ Cena',nt:'abril 2026'},
+];
+
+function getPais(d){
+const m={'Buenos Aires':'Argentina','Córdoba':'Argentina','Rosario':'Argentina','Esquel':'Argentina','Bariloche':'Argentina','Chubut':'Argentina','Mendoza':'Argentina','Santa Fe':'Argentina','Neuquen':'Argentina','Rio Negro':'Argentina','Viedma':'Argentina','La Plata':'Argentina','Argentina':'Argentina','Ushuaia':'Argentina','Santa Cruz':'Argentina','Mar del Plata':'Argentina','Bahía Blanca':'Argentina','San Luis':'Argentina','Brasil':'Brasil','Chile':'Chile','Uruguay':'Uruguay','España':'España','Estados Unidos':'Estados Unidos','Inglaterra':'Inglaterra','Francia':'Francia','Alemania':'Alemania','Holanda':'Holanda','Bèlgica':'Bèlgica','Noruega':'Noruega','Rusia':'Rusia','Paraguay':'Paraguay','Colombia':'Colombia','China':'China','Australia':'Australia','Turquía':'Turquía','Suecia':'Suecia','Suiza':'Suiza','Dinamarca':'Dinamarca','Reino Unido':'Reino Unido','Jujuy':'Argentina','Misiones':'Argentina','Salta':'Argentina','Entre Rios':'Argentina','Chaco':'Argentina','La Pampa':'Argentina','Tucuman':'Argentina','San Juan':'Argentina','Trelew':'Argentina','Comodoro Rivadavia':'Argentina','Viedma':'Argentina'};
+return m[d]||'Argentina';
+}
+function renderClub(){
+const q=(document.getElementById('cv-q')||{}).value||'';
+const ft=(document.getElementById('cv-tipo')||{}).value||'';
+const fp=(document.getElementById('cv-pais')||{}).value||'';
+const fc=(document.getElementById('cv-ciudad')||{}).value||'';
+const list=CLUB.filter(c=>{
+const mn=c.n.toLowerCase().includes(q.toLowerCase())||c.d.toLowerCase().includes(q.toLowerCase());
+const mt=!ft||c.tp===ft;
+const pp=getPais(c.d);
+return mn&&mt&&(!fp||pp===fp)&&(!fc||c.d.includes(fc));
+});
+const pc={};CLUB.forEach(c=>{const p=getPais(c.d);pc[p]=(pc[p]||0)+1;});
+const ext=CLUB.filter(c=>getPais(c.d)!=='Argentina').length;
+document.getElementById('cv-stats').innerHTML=`<span style="background:var(--vc);color:var(--vino);padding:3px 10px;border-radius:99px;font-size:11px;font-weight:500">${list.length} contactos filtrados</span><span>Argentina: ${pc['Argentina']||0}</span><span>Extranjeros: ${ext}</span><span>Brasil: ${pc['Brasil']||0}</span><span>Chile: ${pc['Chile']||0}</span>`;
+document.getElementById('tb-club').innerHTML=list.map((c,i)=>`<tr>
+<td style="text-align:center;color:var(--g3)">${i+1}</td>
+<td style="font-weight:500">${c.n}</td>
+<td>${c.d} <span class="tag t-info" style="font-size:9px">${getPais(c.d)}</span></td>
+<td style="font-family:monospace;font-size:11px">${c.t}</td>
+<td style="font-size:11px;color:var(--az)">${c.e||'—'}</td>
+<td>${c.tp?`<span class="tag ${c.tp.includes('Huésp')||c.tp.includes('Huesp')?'t-vino':c.tp.includes('Almuerzo')?'t-ok':'t-info'}">${c.tp}</span>`:'—'}</td>
+<td style="font-size:11px;color:var(--g3);max-width:160px;overflow:hidden;text-overflow:ellipsis">${c.nt||''}</td>
+</tr>`).join('');
+}
+function exportCV(){
+const q=(document.getElementById('cv-q')||{}).value||'';
+const ft=(document.getElementById('cv-tipo')||{}).value||'';
+const fp=(document.getElementById('cv-pais')||{}).value||'';
+const list=CLUB.filter(c=>(c.n.toLowerCase().includes(q.toLowerCase())||c.d.toLowerCase().includes(q.toLowerCase()))&&(!ft||c.tp===ft)&&(!fp||getPais(c.d)===fp));
+const csv='Nombre,Ciudad,País,Teléfono,Email,Tipo,Notas\n'+list.map(c=>`"${c.n}","${c.d}","${getPais(c.d)}","${c.t}","${c.e}","${c.tp}","${c.nt}"`).join('\n');
+const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);
+const a=document.createElement('a');a.href=url;a.download='club_vinos_cy.csv';a.click();
+toast('✓ Exportando '+list.length+' contactos');
+}
+function copyTels(){
+const q=(document.getElementById('cv-q')||{}).value||'';
+const ft=(document.getElementById('cv-tipo')||{}).value||'';
+const fp=(document.getElementById('cv-pais')||{}).value||'';
+const list=CLUB.filter(c=>(c.n.toLowerCase().includes(q.toLowerCase())||c.d.toLowerCase().includes(q.toLowerCase()))&&(!ft||c.tp===ft)&&(!fp||getPais(c.d)===fp));
+navigator.clipboard.writeText(list.map(c=>c.n+': '+c.t).join('\n')).then(()=>toast('✓ '+list.length+' teléfonos copiados'));
+}
+
+// GANADERÍA
+function renderGan(){
+const d=getData();
+const cats=['Toro','Vaca','Vaquillona','Novillo','Ternero','Ternera'];
+const cn=cats.map(c=>d.rodeo.filter(a=>a.cat===c).length);
+document.getElementById('kpi-gan').innerHTML=[
+{l:'Total rodeo',v:d.rodeo.length,s:'animales'},{l:'Vacas',v:cn[1],s:'en producción'},
+{l:'Terneros/as',v:cn[4]+cn[5],s:'nacidos'},{l:'Eventos sanidad',v:d.sanidad.length,s:'registrados'}
+].map(k=>`<div class="kpi vino"><div class="kl">${k.l}</div><div class="kv">${k.v}</div><div class="ks">${k.s}</div></div>`).join('');
+document.getElementById('tb-rodeo').innerHTML=d.rodeo.length?d.rodeo.map(a=>`<tr>
+<td style="color:var(--g3)">${a.seq||'—'}</td><td style="font-weight:500">${a.car}</td>
+<td><span class="tag t-ok">${a.cat}</span></td><td>${a.sex}</td><td>${fd(a.nac)}</td>
+<td>${a.pot||'—'}</td><td style="text-align:center">${a.peso||'—'}</td>
+<td><span class="tag ${a.san==='Al día'?'t-ok':'t-warn'}">${a.san}</span></td>
+<td><span class="tag t-ok">Activo</span></td>
+<td><button class="btn xs danger" onclick="delAni(${a.id})"><i class="fa fa-trash"></i></button></td></tr>`).join('')
+:'<tr><td colspan="10" style="text-align:center;color:var(--g3);padding:20px">Sin animales — agregá el primer animal</td></tr>';
+document.getElementById('tb-san').innerHTML=d.sanidad.length?d.sanidad.map(s=>`<tr><td>${fd(s.fecha)}</td><td>${s.ani}</td><td style="font-weight:500">${s.prod}</td><td><span class="tag t-info">${s.tipo}</span></td><td>${fd(s.prox)||'—'}</td></tr>`).join(''):'<tr><td colspan="5" style="text-align:center;color:var(--g3);padding:12px">Sin eventos</td></tr>';
+document.getElementById('tb-par').innerHTML=d.pariciones.length?d.pariciones.map(p=>`<tr><td>${fd(p.fecha)}</td><td><span class="tag t-ok">${p.tipo}</span></td><td>${p.madre}</td><td>${p.sex}</td><td>${p.peso?p.peso+' kg':'—'}</td></tr>`).join(''):'<tr><td colspan="5" style="text-align:center;color:var(--g3);padding:12px">Sin pariciones</td></tr>';
+}
+function guardarAni(){const d=getData();const a={id:Date.now(),seq:d.rodeo.length+1,car:document.getElementById('a-car').value.trim(),cat:document.getElementById('a-cat').value,sex:document.getElementById('a-sex').value,nac:document.getElementById('a-nac').value,raza:document.getElementById('a-raza').value,pot:document.getElementById('a-pot').value,peso:document.getElementById('a-peso').value||null,san:document.getElementById('a-san').value,not:document.getElementById('a-not').value};if(!a.car){toast('⚠ Caravana requerida');return;}d.rodeo.push(a);setD(d);closeM('m-ani');renderGan();toast('✓ Animal agregado');}
+function delAni(id){if(!confirm('¿Eliminar?'))return;const d=getData();d.rodeo=d.rodeo.filter(a=>a.id!==id);setD(d);renderGan();}
+function guardarSan(){const d=getData();d.sanidad.push({id:Date.now(),fecha:document.getElementById('s-fecha').value,ani:document.getElementById('s-ani').value,prod:document.getElementById('s-prod').value,tipo:document.getElementById('s-tipo').value,prox:document.getElementById('s-prox').value,costo:document.getElementById('s-costo').value});setD(d);closeM('m-san');renderGan();toast('✓ Evento sanitario guardado');}
+function guardarPar(){const d=getData();d.pariciones.push({id:Date.now(),fecha:document.getElementById('pa-fecha').value,tipo:document.getElementById('pa-tipo').value,madre:document.getElementById('pa-madre').value,sex:document.getElementById('pa-sex').value,peso:document.getElementById('pa-peso').value,obs:document.getElementById('pa-obs').value});setD(d);closeM('m-par');renderGan();toast('✓ Parición guardada');}
+
+// INVENTARIOS
+let invEdit=false;
+function toggleInvEdit(){invEdit=!invEdit;document.getElementById('btn-inv-edit').innerHTML=invEdit?'<i class="fa fa-check"></i> Listo':'<i class="fa fa-edit"></i> Editar';renderInv();}
+function renderInv(){
+const d=getData();const casa=document.getElementById('inv-sel').value;const inv=d.inventarios[casa]||{};
+let html='';
+Object.entries(inv).forEach(([sec,items])=>{
+html+=`<div class="inv-sec"><h3>${sec} <span style="color:var(--g3);font-weight:400;font-size:11px">(${items.length})</span></h3>`;
+items.forEach((item,idx)=>{
+if(invEdit){html+=`<div class="inv-item"><input value="${item}" onchange="eInv('${casa}','${sec}',${idx},this.value)" style="flex:1;padding:4px 7px;border:1px solid var(--borde);border-radius:3px;font-size:12px;font-family:sans-serif;outline:none"><button class="btn xs danger" onclick="dInv('${casa}','${sec}',${idx})"><i class="fa fa-trash"></i></button></div>`;}
+else{html+=`<div class="inv-item"><span style="flex:1;color:var(--g1)">${item}</span></div>`;}
+});
+html+='</div>';
+});
+if(!Object.keys(inv).length)html='<div style="text-align:center;color:var(--g3);padding:30px;font-family:sans-serif">Sin inventario — agregá ítems con el botón + arriba</div>';
+document.getElementById('inv-content').innerHTML=html;
+}
+function eInv(c,s,i,v){const d=getData();if(d.inventarios[c]&&d.inventarios[c][s])d.inventarios[c][s][i]=v;setD(d);}
+function dInv(c,s,i){const d=getData();if(d.inventarios[c]&&d.inventarios[c][s])d.inventarios[c][s].splice(i,1);setD(d);renderInv();}
+function guardarInvItem(){
+const d=getData();
+const c=document.getElementById('ii-casa').value;
+const s=document.getElementById('ii-sec').value.trim();
+const q=document.getElementById('ii-qty').value.trim();
+const desc=document.getElementById('ii-desc').value.trim();
+if(!desc){toast('⚠ Descripción requerida');return;}
+if(!d.inventarios[c])d.inventarios[c]={};
+if(!d.inventarios[c][s])d.inventarios[c][s]=[];
+d.inventarios[c][s].push(q?q+' '+desc:desc);
+setD(d);closeM('m-inv-add');
+document.getElementById('inv-sel').value=c;
+renderInv();toast('✓ Ítem agregado');
+}
+
+// REGLAS
+function renderReglas(){
+const d=getData();const sel=document.getElementById('reg-sel').value;
+const regs=d.reglas[sel]||[];
+const nombres={general:'Reglas generales',bodega:'Casa Bodega',deck:'Casa Deck',huerta:'Casa Huerta',suite:'Suite Huerta',principal:'Casa Principal'};
+document.getElementById('reg-content').innerHTML=`
+<div class="card"><div class="ch"><h3><i class="fa fa-scroll" style="color:var(--vino)"></i>${nombres[sel]}</h3></div>
+<div class="cb">
+${regs.map((r,i)=>`<div class="reg-item">
+<div class="reg-num">${i+1}</div>
+<input value="${r}" onchange="eReg('${sel}',${i},this.value)" style="flex:1;padding:5px 8px;border:1px solid var(--borde);border-radius:var(--rs);font-size:12px;font-family:sans-serif;outline:none">
+<button class="btn xs danger" onclick="dReg('${sel}',${i})" style="margin-left:6px"><i class="fa fa-trash"></i></button>
+</div>`).join('')}
+${!regs.length?'<div style="color:var(--g3);font-family:sans-serif;font-size:12px;padding:10px 0">Sin reglas cargadas — usá el botón + para agregar</div>':''}
+</div></div>`;
+}
+function eReg(sel,i,v){const d=getData();d.reglas[sel][i]=v;setD(d);toast('✓ Regla actualizada');}
+function dReg(sel,i){if(!confirm('¿Eliminar?'))return;const d=getData();d.reglas[sel].splice(i,1);setD(d);renderReglas();}
+function guardarRegla(){
+const d=getData();const casa=document.getElementById('rg-casa').value;const txt=document.getElementById('rg-text').value.trim();
+if(!txt){toast('⚠ Texto requerido');return;}
+if(!d.reglas[casa])d.reglas[casa]=[];
+d.reglas[casa].push(txt);setD(d);closeM('m-regla');
+document.getElementById('reg-sel').value=casa;
+renderReglas();toast('✓ Regla agregada');
+}
+
+// PERSONAL
+function renderPersonal(){
+  const d=getData();
+  // Build employee selector tabs
+  const emps=Object.keys(d.personal||{});
+  const PINI_NAMES=['Elba Leufuman','Macarena Mora','Marcia Martinez','Jessica Martinez'];
+  const allEmps=[...new Set([...PINI_NAMES,...emps])];
+  
+  document.getElementById('pers-tabs').innerHTML=allEmps.map(n=>{
+    const info=(d.personal||{})[n]||{color:'#595959',rol:'Personal'};
+    const isAct=n===persEmpAct;
+    return`<button onclick="setPersEmp('${n}')" style="padding:6px 14px;border-radius:99px;border:0.5px solid var(--borde);font-family:sans-serif;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px;background:${isAct?info.color:'transparent'};color:${isAct?'#fff':'var(--g2)'};border-color:${isAct?info.color:'var(--borde)'}">
+      <span style="width:10px;height:10px;border-radius:50%;background:${info.color};flex-shrink:0"></span>
+      ${n.split(' ')[0]}
+    </button>`;
+  }).join('');
+
+  // Update nd-emp select
+  const ndEmp=document.getElementById('nd-emp');
+  if(ndEmp) ndEmp.innerHTML=allEmps.map(n=>`<option value="${n}"${n===persEmpAct?' selected':''}>${n}</option>`).join('');
+
+  // Color picker for new emp
+  const npColors=document.getElementById('np-colors');
+  if(npColors){
+    const cols=['#7B2D42','#1F4E79','#2D5A1B','#6B4226','#4A4078','#1F6B75','#B8860B','#595959','#C00000','#0F6E56'];
+    const selColor=document.getElementById('np-color').value;
+    npColors.innerHTML=cols.map(c=>`<div onclick="selNpColor('${c}')" style="width:28px;height:28px;border-radius:50%;background:${c};cursor:pointer;border:2px solid ${c===selColor?'var(--g1)':'transparent'};transition:border-color .15s"></div>`).join('');
+  }
+
+  // Render current employee
+  const pHist=getPersHist();
+  const hist=pHist[persEmpAct]||[];
+  const empInfo=(d.personal||{})[persEmpAct]||{color:'#595959',rol:'Personal',tipo:'Empleado fijo'};
+  
+  const MNAMES=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const meses=[...new Set(hist.map(r=>r.f.slice(0,7)))].sort().reverse();
+  
+  const trab=hist.filter(r=>['Día trabajado','Jornal','Medio día trabajado'].includes(r.t)).length;
+  const libres=hist.filter(r=>['Franco','Vacaciones','Medio día libre','Licencia'].includes(r.t)).length;
+  const totalH=hist.reduce((a,r)=>a+(parseFloat(r.h)||0),0);
+  const totalP=hist.reduce((a,r)=>a+(parseFloat(r.p)||0),0);
+
+  // Month filter
+  const mfHtml=`<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px">
+    <button class="mfb${persMesAct===''?' active':''}" onclick="setPersMes('')">Todos</button>
+    ${meses.map(m=>{const[y,mo]=m.split('-');return`<button class="mfb${persMesAct===m?' active':''}" onclick="setPersMes('${m}')">${MNAMES[parseInt(mo)-1]} ${y}</button>`;}).join('')}
+  </div>`;
+
+  const lista=persMesAct?hist.filter(r=>r.f.startsWith(persMesAct)):[...hist].sort((a,b)=>b.f.localeCompare(a.f));
+  const totLH=lista.reduce((a,r)=>a+(parseFloat(r.h)||0),0);
+  const totLP=lista.reduce((a,r)=>a+(parseFloat(r.p)||0),0);
+  const trabL=lista.filter(r=>['Día trabajado','Jornal','Medio día trabajado'].includes(r.t)).length;
+  const libL=lista.filter(r=>['Franco','Vacaciones','Medio día libre','Licencia'].includes(r.t)).length;
+
+  function badgeT(t){
+    const m={'Día trabajado':'b-trabajo','Franco':'b-franco','Vacaciones':'b-vacaciones','Jornal':'b-jornal','Licencia':'b-licencia'};
+    if(t.includes('Medio'))return'b-medio';
+    return m[t]||'b-otro';
+  }
+
+  document.getElementById('pers-content').innerHTML=`
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px">
+      <div class="kpi"><div class="kl">Días trabajados</div><div class="kv">${trab}</div><div class="ks">total histórico</div></div>
+      <div class="kpi"><div class="kl">Días libres</div><div class="kv">${libres}</div><div class="ks">francos + vacaciones</div></div>
+      <div class="kpi"><div class="kl">Horas trabajadas</div><div class="kv">${totalH||'—'}</div><div class="ks">total histórico</div></div>
+      <div class="kpi vino"><div class="kl">Total pagado</div><div class="kv" style="font-size:${totalP>999999?'14px':'20px'}">${totalP?'ARS '+Math.round(totalP).toLocaleString('es-AR'):'—'}</div><div class="ks">histórico</div></div>
+    </div>
+    ${mfHtml}
+    <div class="card">
+      <div class="tw"><table>
+        <thead><tr><th>Fecha</th><th>Tipo</th><th>Horas</th><th>Pago ARS</th><th>Casa / Área</th><th>Tarea / Notas</th><th></th></tr></thead>
+        <tbody>
+          ${lista.map(r=>`<tr>
+            <td style="white-space:nowrap">${fdS(r.f)}</td>
+            <td><span class="badge ${badgeT(r.t)}">${r.t}</span></td>
+            <td style="text-align:center;color:var(--g3)">${r.h?r.h+' hs':'—'}</td>
+            <td style="text-align:right;font-weight:500">${r.p?'ARS '+parseFloat(r.p).toLocaleString('es-AR'):'—'}</td>
+            <td style="font-size:11px;color:var(--g3)">${r.c||'—'}</td>
+            <td style="font-size:11px;color:var(--g3)">${[r.ta,r.n].filter(Boolean).join(' · ')||'—'}</td>
+            <td><button class="btn xs danger" onclick="delDiaPersonal('${persEmpAct}',${r.id})"><i class="fa fa-trash"></i></button></td>
+          </tr>`).join('')}
+          ${lista.length?`<tr style="background:var(--g5);font-weight:500">
+            <td>Totales</td>
+            <td><span class="badge b-trabajo" style="font-size:10px">${trabL} trab.</span> <span class="badge b-franco" style="font-size:10px">${libL} libres</span></td>
+            <td style="text-align:center">${totLH?totLH+' hs':'—'}</td>
+            <td style="text-align:right">${totLP?'ARS '+Math.round(totLP).toLocaleString('es-AR'):'—'}</td>
+            <td colspan="3"></td>
+          </tr>`:''}
+          ${!lista.length?'<tr><td colspan="7" style="text-align:center;color:var(--g3);padding:20px">Sin registros para este período</td></tr>':''}
+        </tbody>
+      </table></div>
+    </div>`;
+}
+
+let persEmpAct='Elba Leufuman';
+let persMesAct='';
+
+function setPersEmp(n){persEmpAct=n;renderPersonal();}
+function setPersMes(m){persMesAct=m;renderPersonal();}
+function selNpColor(c){document.getElementById('np-color').value=c;renderPersonal();}
+
+function fdS(s){if(!s)return'—';const p=s.split('-');return p[2]+'/'+p[1]+'/'+p[0];}
+
+const PERS_K='cy_pers_hist';
+function getPersHist(){try{return JSON.parse(localStorage.getItem(PERS_K))||getDefaultHist();}catch(e){return getDefaultHist();}}
+function savePersHist(h){localStorage.setItem(PERS_K,JSON.stringify(h));}
+
+function getDefaultHist(){
+  return {
+    'Elba Leufuman':[
+      {id:1,f:'2026-02-23',t:'Franco',h:'',p:'',c:'',ta:'',n:''},{id:2,f:'2026-03-04',t:'Franco',h:'',p:'',c:'',ta:'',n:''},
+      {id:3,f:'2026-03-05',t:'Franco',h:'',p:'',c:'',ta:'',n:''},{id:4,f:'2026-03-06',t:'Franco',h:'',p:'',c:'',ta:'',n:''},
+      {id:5,f:'2026-03-07',t:'Franco',h:'',p:'',c:'',ta:'',n:''},{id:6,f:'2026-03-08',t:'Franco',h:'',p:'',c:'',ta:'',n:''},
+      {id:7,f:'2026-03-15',t:'Franco',h:'',p:'',c:'',ta:'',n:''},{id:8,f:'2026-03-28',t:'Franco',h:'',p:'',c:'',ta:'',n:''},
+      {id:9,f:'2026-03-29',t:'Franco',h:'',p:'',c:'',ta:'',n:''},{id:10,f:'2026-04-10',t:'Franco',h:'',p:'',c:'',ta:'',n:''},
+      {id:11,f:'2026-04-29',t:'Franco',h:'',p:'',c:'',ta:'',n:''},{id:12,f:'2026-04-30',t:'Franco',h:'',p:'',c:'',ta:'',n:''},
+      {id:13,f:'2026-05-01',t:'Franco',h:'',p:'',c:'',ta:'',n:''},{id:14,f:'2026-05-11',t:'Franco',h:'',p:'',c:'',ta:'',n:''},
+      {id:15,f:'2026-05-12',t:'Franco',h:'',p:'',c:'',ta:'',n:''},{id:16,f:'2026-05-25',t:'Medio día libre',h:'4',p:'',c:'',ta:'',n:''},
+      {id:17,f:'2026-05-26',t:'Franco',h:'',p:'',c:'',ta:'',n:''},{id:18,f:'2026-05-27',t:'Franco',h:'',p:'',c:'',ta:'',n:''},
+    ],
+    'Macarena Mora':[
+      {id:1,f:'2026-02-08',t:'Franco',h:'',p:'',c:'',ta:'',n:''},{id:2,f:'2026-02-21',t:'Franco',h:'',p:'',c:'',ta:'',n:''},
+      {id:3,f:'2026-03-08',t:'Franco',h:'',p:'',c:'',ta:'',n:''},{id:4,f:'2026-03-15',t:'Franco',h:'',p:'',c:'',ta:'',n:''},
+      {id:5,f:'2026-03-21',t:'Franco',h:'',p:'',c:'',ta:'',n:''},{id:6,f:'2026-03-28',t:'Franco',h:'',p:'',c:'',ta:'',n:''},
+      {id:7,f:'2026-04-05',t:'Franco',h:'',p:'',c:'',ta:'',n:''},{id:8,f:'2026-04-12',t:'Franco',h:'',p:'',c:'',ta:'',n:''},
+      {id:9,f:'2026-05-01',t:'Franco',h:'',p:'',c:'',ta:'',n:''},{id:10,f:'2026-05-10',t:'Franco',h:'',p:'',c:'',ta:'',n:''},
+      {id:11,f:'2026-05-16',t:'Franco',h:'',p:'',c:'',ta:'',n:''},{id:12,f:'2026-05-23',t:'Franco',h:'',p:'',c:'',ta:'',n:''},
+    ],
+    'Marcia Martinez':[
+      {id:1,f:'2026-04-03',t:'Franco',h:'',p:'',c:'',ta:'',n:''},{id:2,f:'2026-05-07',t:'Franco',h:'',p:'',c:'',ta:'',n:''},
+      {id:3,f:'2026-05-08',t:'Franco',h:'',p:'',c:'',ta:'',n:''},{id:4,f:'2026-05-11',t:'Franco',h:'',p:'',c:'',ta:'',n:''},
+      {id:5,f:'2026-06-08',t:'Vacaciones',h:'',p:'',c:'',ta:'',n:'Vacaciones hasta 22/06'},
+    ],
+    'Jessica Martinez':[
+      {id:1,f:'2026-01-18',t:'Franco',h:'',p:'',c:'',ta:'',n:''},{id:2,f:'2026-02-04',t:'Franco',h:'',p:'',c:'',ta:'',n:''},
+      {id:3,f:'2026-02-12',t:'Franco',h:'',p:'',c:'',ta:'',n:''},{id:4,f:'2026-02-19',t:'Franco',h:'',p:'',c:'',ta:'',n:''},
+      {id:5,f:'2026-02-25',t:'Medio día libre',h:'4',p:'',c:'',ta:'',n:''},{id:6,f:'2026-03-01',t:'Franco',h:'',p:'',c:'',ta:'',n:''},
+      {id:7,f:'2026-03-04',t:'Medio día libre',h:'4',p:'',c:'',ta:'',n:''},{id:8,f:'2026-03-11',t:'Franco',h:'',p:'',c:'',ta:'',n:''},
+      {id:9,f:'2026-03-17',t:'Medio día libre',h:'4',p:'',c:'',ta:'',n:''},{id:10,f:'2026-03-21',t:'Franco',h:'',p:'',c:'',ta:'',n:''},
+      {id:11,f:'2026-04-02',t:'Franco',h:'',p:'',c:'',ta:'',n:''},{id:12,f:'2026-04-15',t:'Franco',h:'',p:'',c:'',ta:'',n:''},
+      {id:13,f:'2026-04-19',t:'Franco',h:'',p:'',c:'',ta:'',n:''},{id:14,f:'2026-04-25',t:'Franco',h:'',p:'',c:'',ta:'',n:''},
+      {id:15,f:'2026-05-02',t:'Franco',h:'',p:'',c:'',ta:'',n:''},{id:16,f:'2026-05-23',t:'Medio día libre',h:'4',p:'',c:'',ta:'',n:''},
+      {id:17,f:'2026-05-25',t:'Medio día libre',h:'4',p:'',c:'',ta:'',n:''},
+    ],
+  };
+}
+
+function guardarDiaPersonal(){
+  const fecha=document.getElementById('nd-fecha').value;
+  const emp=document.getElementById('nd-emp').value;
+  const tipo=document.getElementById('nd-tipo').value;
+  if(!fecha){toast('⚠ Fecha requerida');return;}
+  const h=getPersHist();
+  if(!h[emp])h[emp]=[];
+  const maxId=Math.max(0,...h[emp].map(r=>r.id));
+  h[emp].push({
+    id:maxId+1,f:fecha,t:tipo,
+    h:document.getElementById('nd-horas').value||'',
+    p:document.getElementById('nd-pago').value||'',
+    c:document.getElementById('nd-casa').value||'',
+    ta:document.getElementById('nd-tarea').value||'',
+    n:document.getElementById('nd-notas').value||'',
+  });
+  savePersHist(h);
+  ['nd-fecha','nd-horas','nd-pago','nd-tarea','nd-notas'].forEach(id=>{try{document.getElementById(id).value='';}catch(e){}});
+  closeM('m-nuevo-dia');
+  if(emp===persEmpAct)renderPersonal();
+  toast('✓ Día registrado para '+emp);
+}
+
+function delDiaPersonal(emp,id){
+  if(!confirm('¿Eliminar?'))return;
+  const h=getPersHist();
+  if(h[emp])h[emp]=h[emp].filter(r=>r.id!==id);
+  savePersHist(h);renderPersonal();
+}
+
+function guardarNuevoEmp(){
+  const nombre=document.getElementById('np-nombre').value.trim();
+  const rol=document.getElementById('np-rol').value.trim();
+  const tipo=document.getElementById('np-tipoemp').value;
+  const color=document.getElementById('np-color').value;
+  if(!nombre){toast('⚠ Nombre requerido');return;}
+  const d=getData();
+  if(!d.personal)d.personal={};
+  d.personal[nombre]={color,rol,tipo};
+  setD(d);
+  const h=getPersHist();
+  if(!h[nombre])h[nombre]=[];
+  savePersHist(h);
+  document.getElementById('np-nombre').value='';
+  document.getElementById('np-rol').value='';
+  closeM('m-nuevo-emp-p');
+  persEmpAct=nombre;
+  renderPersonal();
+  toast('✓ '+nombre+' agregado al equipo');
+}
+
+function guardarFranco(){
+const d=getData();const emp=document.getElementById('f-emp').value;const tipo=document.getElementById('f-tipo').value;
+const desde=document.getElementById('f-desde').value;const hasta=document.getElementById('f-hasta').value;const not=document.getElementById('f-not').value;
+if(!desde){toast('⚠ Fecha requerida');return;}
+if(!d.personal[emp])d.personal[emp]={color:'#7B2D42',rol:'',dias:[]};
+d.personal[emp].dias.push({f:desde,t:tipo,n:not||(hasta&&hasta!==desde?'hasta '+hasta:'')});
+setD(d);closeM('m-franco');renderPersonal();toast('✓ Franco registrado');
+}
+
+// EMAILS
+const TMPLS={
+'Confirmación reserva':{s:'Confirmación de reserva — Casa Yagüe · Trevelin',b:`Hola {{NOMBRE}},\n\nNos alegra confirmar tu reserva en Casa Yagüe.\n\n  Casa:      {{CASA}}\n  Check-in:  {{CHECK_IN}}\n  Check-out: {{CHECK_OUT}}\n  Personas:  {{PAX}}\n  Total:     {{MONTO}}\n  Saldo:     {{SALDO}}\n\n¡Hasta pronto!\n\nEl equipo de Casa Yagüe · Trevelin, Patagonia`},
+'Recordatorio check-in':{s:'Tu llegada se acerca — Casa Yagüe 🍷',b:`Hola {{NOMBRE}},\n\nFaltan pocos días para tu llegada.\n\n  📅 Check-in:  {{CHECK_IN}} desde las 15:00 hs\n  📅 Check-out: {{CHECK_OUT}} hasta las 11:00 hs\n  🏡 Casa:      {{CASA}}\n\n¿Querés agregar alguna experiencia?\n  → Visita guiada por la bodega\n  → Almuerzo maridaje\n\n¡Te esperamos!\n\nEl equipo de Casa Yagüe`},
+'Post check-out':{s:'Gracias por estar en Casa Yagüe',b:`Hola {{NOMBRE}},\n\nFue un placer recibirte en {{CASA}}.\n\nSi tenés un momento, dejanos una reseña en Google o Booking — nos ayuda mucho.\n\nPara volver tenés tarifas preferenciales como cliente frecuente.\n\nHasta la próxima,\nEl equipo de Casa Yagüe · Trevelin`},
+'Saldo pendiente':{s:'Detalle de saldo — reserva Casa Yagüe',b:`Hola {{NOMBRE}},\n\nPasamos a recordarte el saldo de tu reserva en {{CASA}}.\n\n  Total:  {{MONTO}}\n  Saldo:  {{SALDO}}\n\nCuentas disponibles:\n  → Mercado Pago: [alias CY]\n  → Galicia USD: [CBU]\n  → WISE: [datos]\n\nMandanos el comprobante por WhatsApp.\n\nEl equipo de Casa Yagüe`},
+'Confirmación visita':{s:'Reserva confirmada — {{ACTIVIDAD}} en Casa Yagüe',b:`Hola {{NOMBRE}},\n\n¡Confirmamos tu reserva para {{ACTIVIDAD}}!\n\n  Fecha:    {{CHECK_IN}}\n  Personas: {{PAX}}\n  Total:    {{MONTO}}\n\nRecomendamos llegar 10 min antes. Avisanos si hay alergias.\n\n¡Nos vemos pronto!\nEl equipo de Casa Yagüe`},
+'Cotización grupo':{s:'Cotización — Casa Yagüe · Trevelin',b:`Hola {{NOMBRE}},\n\nPara {{PAX}} personas el {{CHECK_IN}} ofrecemos:\n\nOPCIÓN A — Visita + degustación: USD [precio]/pp\nOPCIÓN B — Almuerzo maridaje: USD [precio]/pp\nOPCIÓN C — Experiencia + alojamiento: USD [precio]/noche\n\n¿Coordinamos una llamada?\n\nEl equipo de Casa Yagüe`},
+'Invitación volver':{s:'Casa Yagüe te extraña, {{NOMBRE}} 🍂',b:`Hola {{NOMBRE}},\n\nQueríamos escribirte con novedades de la bodega.\n\nPara clientes que ya nos conocen tenemos disponibilidad preferencial y tarifas especiales que no publicamos en las OTAs.\n\n¿Querés que veamos fechas?\n\nEl equipo de Casa Yagüe`},
+'Envío presupuesto':{s:'Presupuesto Casa Yagüe — {{NOMBRE}}',b:`Hola {{NOMBRE}},\n\nAdjunto el presupuesto para tu estadía.\n\n  Actividad: {{ACTIVIDAD}}\n  Fecha:     {{CHECK_IN}}\n  Personas:  {{PAX}}\n  Total:     {{MONTO}}\n\nPara confirmar: anticipo del 50% ({{SALDO}}).\n\nEl equipo de Casa Yagüe`}
+};
+const EVARS=['{{NOMBRE}}','{{CASA}}','{{CHECK_IN}}','{{CHECK_OUT}}','{{PAX}}','{{MONTO}}','{{SALDO}}','{{ACTIVIDAD}}'];
+function renderEmails(){
+document.getElementById('tmpl-list').innerHTML=Object.keys(TMPLS).map(k=>`
+<div onclick="loadTmpl('${k}')" style="padding:8px 11px;border:1px solid var(--borde);border-radius:var(--rs);cursor:pointer;font-family:sans-serif;font-size:12px;display:flex;align-items:center;gap:7px;transition:background .15s" onmouseover="this.style.background='var(--vc)'" onmouseout="this.style.background=''">
+<i class="fa fa-envelope" style="color:var(--vino);font-size:11px"></i>${k}</div>`).join('');
+document.getElementById('e-vars').innerHTML=EVARS.map(v=>`<span onclick="insVar('${v}')" style="font-size:11px;font-family:monospace;padding:2px 7px;border:1px solid var(--borde);border-radius:3px;background:var(--g5);cursor:pointer;color:var(--azm)">${v}</span>`).join('');
+loadTmpl(Object.keys(TMPLS)[0]);
+}
+function loadTmpl(k){const t=TMPLS[k];document.getElementById('e-subj').value=t.s;document.getElementById('e-body').value=t.b;}
+function insVar(v){const ta=document.getElementById('e-body');const s=ta.selectionStart;ta.value=ta.value.slice(0,s)+v+ta.value.slice(s);ta.selectionStart=ta.selectionEnd=s+v.length;ta.focus();}
+function copyEmail(){navigator.clipboard.writeText('Asunto: '+document.getElementById('e-subj').value+'\n\n'+document.getElementById('e-body').value).then(()=>toast('✓ Copiado'));}
+function openGmail(){window.open('https://mail.google.com/mail/?view=cm&fs=1&su='+encodeURIComponent(document.getElementById('e-subj').value)+'&body='+encodeURIComponent(document.getElementById('e-body').value),'_blank');}
+
+// PRESUPUESTOS
+const presID='CY-'+new Date().getFullYear()+'-'+String(new Date().getDate()).padStart(2,'0')+String(new Date().getMonth()+1).padStart(2,'0')+'-'+Math.floor(Math.random()*90+10);
+function calcNts(){const ci=document.getElementById('p-ci')?.value,co=document.getElementById('p-co')?.value;if(!ci||!co)return 0;return Math.max(0,Math.round((new Date(co)-new Date(ci))/86400000));}
+function fDS(s){if(!s)return'—';const p=s.split('-');const m=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];return parseInt(p[2])+' '+m[parseInt(p[1])-1]+' '+p[0];}
+function upPres(){
+const cli=document.getElementById('p-cli')?.value||'Cliente';
+const em=document.getElementById('p-em')?.value||'';
+const pax=parseInt(document.getElementById('p-pax')?.value)||2;
+const casa=document.getElementById('p-casa')?.value||'Casa Bodega';
+const ci=document.getElementById('p-ci')?.value||'',co=document.getElementById('p-co')?.value||'';
+const nts=calcNts();const tc=parseInt(document.getElementById('p-tc')?.value)||1420;const ant=parseInt(document.getElementById('p-ant')?.value)||50;
+const p2=parseInt(document.getElementById('p-p2')?.value)||300;const p3=parseInt(document.getElementById('p-p3')?.value)||350;
+const pAloj=pax<=2?p2:p3;const pVis=parseInt(document.getElementById('p-pvis')?.value)||25;const pAlm=parseInt(document.getElementById('p-palm')?.value)||130;const pDeg=parseInt(document.getElementById('p-pdeg')?.value)||40;
+const notas=document.getElementById('p-notas')?.value||'';
+let items=[],total=0;
+if(nts>0){const s=pAloj*nts;total+=s;items.push({d:'Alojamiento — '+casa,det:nts+' noches · '+pax+' personas · USD '+pAloj+'/noche',usd:s});}
+if(document.getElementById('p-vis')?.checked){const s=pVis*pax;total+=s;items.push({d:'Visita guiada',det:pax+' personas · USD '+pVis+'/pp',usd:s});}
+if(document.getElementById('p-alm')?.checked){const s=pAlm*pax;total+=s;items.push({d:'Almuerzo maridaje',det:pax+' personas · USD '+pAlm+'/pp',usd:s});}
+if(document.getElementById('p-deg')?.checked){const s=pDeg*pax;total+=s;items.push({d:'Degustación',det:pax+' personas · USD '+pDeg+'/pp',usd:s});}
+const anticipo=Math.round(total*ant/100);const saldo=total-anticipo;
+document.getElementById('pres-prev').innerHTML=`
+<div style="border-bottom:2px solid #7B2D42;padding-bottom:12px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:flex-start">
+<div><div style="font-size:17px;color:#7B2D42;font-family:Georgia,serif">Casa Yagüe · Trevelin</div><div style="font-size:10px;color:var(--g3)">Bodega · Alojamiento · Enoturismo · Patagonia</div></div>
+<div style="text-align:right;font-size:11px;color:var(--g3);line-height:1.6"><div><strong>${presID}</strong></div><div>${fDS(new Date().toISOString().split('T')[0])}</div></div>
+</div>
+<div style="background:var(--bg);border-radius:var(--rs);padding:10px 12px;margin-bottom:12px;font-family:sans-serif">
+<div style="font-size:9px;color:var(--g3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">Para</div>
+<div style="font-size:14px;font-weight:500">${cli}</div>
+${em?'<div style="font-size:11px;color:var(--g3)">'+em+'</div>':''}
+${ci&&co?'<div style="font-size:11px;color:var(--g3);margin-top:3px">Check-in: '+fDS(ci)+' → Check-out: '+fDS(co)+' ('+nts+' noches)</div>':''}
+</div>
+<table style="width:100%;border-collapse:collapse;font-family:sans-serif;font-size:12px;margin-bottom:10px">
+<thead><tr><th style="text-align:left;padding:5px 0;border-bottom:1px solid var(--borde);font-size:9px;color:var(--g3);text-transform:uppercase">Servicio</th><th style="text-align:right;padding:5px 0;border-bottom:1px solid var(--borde);font-size:9px;color:var(--g3);text-transform:uppercase">Total</th></tr></thead>
+<tbody>${items.map(i=>'<tr><td style="padding:7px 0">'+i.d+'<br><span style="font-size:10px;color:var(--g3)">'+i.det+'</span></td><td style="text-align:right;font-weight:500">USD '+i.usd.toLocaleString()+'</td></tr>').join('')||'<tr><td colspan="2" style="text-align:center;color:var(--g3);padding:12px">Seleccioná al menos una experiencia</td></tr>'}</tbody>
+</table>
+${total?`<div style="background:#7B2D42;color:#fff;border-radius:var(--rs);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:5px"><span style="font-size:13px">Total</span><span style="font-size:17px;font-weight:500">USD ${total.toLocaleString()}</span></div>
+<div style="background:var(--vc);border-radius:var(--rs);padding:9px 14px;display:flex;justify-content:space-between;margin-bottom:4px;font-family:sans-serif;font-size:12px;color:var(--vino)"><span>Anticipo (${ant}%) para confirmar</span><span style="font-weight:600">USD ${anticipo.toLocaleString()} ≈ ARS ${(anticipo*tc).toLocaleString()}</span></div>
+<div style="background:var(--g5);border-radius:var(--rs);padding:9px 14px;display:flex;justify-content:space-between;font-family:sans-serif;font-size:12px"><span style="color:var(--g3)">Saldo al check-in</span><span style="font-weight:500">USD ${saldo.toLocaleString()}</span></div>`:''}
+${notas?'<div style="background:var(--bg);border-radius:var(--rs);padding:9px 12px;font-family:sans-serif;font-size:11px;color:var(--g3);margin-top:9px"><strong style="color:var(--g1)">Incluye</strong><br>'+notas+'</div>':''}
+<div style="text-align:center;font-family:sans-serif;font-size:10px;color:var(--g3);margin-top:14px;padding-top:10px;border-top:1px solid var(--borde)">Casa Yagüe · Trevelin, Chubut · Patagonia Argentina</div>`;
+}
+function copyPres(){navigator.clipboard.writeText(document.getElementById('pres-prev').innerText).then(()=>toast('✓ Presupuesto copiado'));}
+function openGmailPres(){const s=encodeURIComponent('Presupuesto Casa Yagüe — '+(document.getElementById('p-cli').value||''));const b=encodeURIComponent(document.getElementById('pres-prev').innerText);const e=encodeURIComponent(document.getElementById('p-em').value||'');window.open('https://mail.google.com/mail/?view=cm&fs=1&to='+e+'&su='+s+'&body='+b,'_blank');}
+
+
+// ═══════════════════════════════════════════════════════
+// SINCRONIZACIÓN CON GOOGLE SHEETS
+// ═══════════════════════════════════════════════════════
+const GS_URL = 'https://script.google.com/a/macros/casayague.com/s/AKfycbwiVT87akJgr_aJHp33H9zJzqXu5eoe_MsNi4h8d8_1W35nzx0cfLZlag_WoT76lxN9zg/exec';
+let syncStatus = 'idle'; // idle | syncing | ok | error
+
+async function gsGet(table) {
+  try {
+    const r = await fetch(GS_URL + '?table=' + table);
+    const d = await r.json();
+    return d.ok ? d.data : [];
+  } catch(e) { return []; }
+}
+
+async function gsSetAll(payload) {
+  try {
+    setSyncUI('syncing');
+    const r = await fetch(GS_URL, {
+      method: 'POST',
+      body: JSON.stringify({action:'setAll', payload})
+    });
+    const d = await r.json();
+    setSyncUI(d.ok ? 'ok' : 'error');
+    return d.ok;
+  } catch(e) { setSyncUI('error'); return false; }
+}
+
+async function gsGetAll() {
+  try {
+    setSyncUI('syncing');
+    const r = await fetch(GS_URL + '?all=1');
+    const d = await r.json();
+    setSyncUI(d.ok ? 'ok' : 'error');
+    return d.ok ? d.data : null;
+  } catch(e) { setSyncUI('error'); return null; }
+}
+
+function setSyncUI(status) {
+  syncStatus = status;
+  const el = document.getElementById('sync-btn');
+  if (!el) return;
+  const states = {
+    idle:    {txt:'☁ Sincronizar', cls:'', title:'Guardar en Google Sheets'},
+    syncing: {txt:'⏳ Guardando...', cls:'syncing', title:'Sincronizando...'},
+    ok:      {txt:'✓ Guardado', cls:'ok', title:'Datos guardados en Sheets'},
+    error:   {txt:'✗ Error', cls:'error', title:'Error al sincronizar'},
+  };
+  const s = states[status] || states.idle;
+  el.textContent = s.txt;
+  el.title = s.title;
+  el.className = 'sync-btn ' + s.cls;
+  if (status === 'ok') setTimeout(() => setSyncUI('idle'), 3000);
+}
+
+async function syncToSheets() {
+  const d = getData();
+  const fin = loadFin();
+  const pers = getData();
+  
+  const payload = {
+    reservas: d.reservas || [],
+    clientes: d.clientes || [],
+    visitas: d.visitas || [],
+    ingresos: fin.ing || [],
+    egresos: fin.egr || [],
+    vinos: d.vinos || [],
+    rodeo: d.rodeo || [],
+  };
+  
+  const ok = await gsSetAll(payload);
+  if (ok) toast('✓ Datos guardados en Google Sheets');
+  else toast('✗ Error al sincronizar — verificá la conexión');
+}
+
+async function loadFromSheets() {
+  setSyncUI('syncing');
+  const all = await gsGetAll();
+  if (!all) { toast('✗ No se pudo conectar con Google Sheets'); return; }
+  
+  const d = getData();
+  if (all.reservas && all.reservas.length) d.reservas = all.reservas;
+  if (all.clientes && all.clientes.length) d.clientes = all.clientes;
+  if (all.visitas && all.visitas.length) d.visitas = all.visitas;
+  if (all.vinos && all.vinos.length) d.vinos = all.vinos;
+  if (all.rodeo && all.rodeo.length) d.rodeo = all.rodeo;
+  setD(d);
+  
+  const fin = loadFin();
+  if (all.ingresos && all.ingresos.length) fin.ing = all.ingresos;
+  if (all.egresos && all.egresos.length) fin.egr = all.egresos;
+  saveFin(fin);
+  
+  setSyncUI('ok');
+  toast('✓ Datos cargados desde Google Sheets');
+  render(tabAct || 'inicio');
+}
+
+// INIT
+window.addEventListener('load',()=>{
+const hoyFin=new Date().toISOString().split('T')[0];
+['fi-fecha','fe-fecha','nd-fecha'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=hoyFin;});
+const today=new Date();
+const d1=new Date(today);d1.setDate(d1.getDate()+7);
+const d2=new Date(d1);d2.setDate(d2.getDate()+3);
+const fmt=d=>d.toISOString().split('T')[0];
+document.getElementById('p-ci').value=fmt(d1);
+document.getElementById('p-co').value=fmt(d2);
+fdY=today.getFullYear();fdM=today.getMonth();
+renderInicio();upPres();
+});
+</script>
+<datalist id="dl-clientes"><option value="Isabel Noble"><option value="Martin Garcia Moron"><option value="Melisa Hernandez Osorio"><option value="Camila Villar"><option value="Cristian Amalfitano"><option value="Andrea Laurino"><option value="Hector Nervi"><option value="Laura Cascardo"><option value="Daniel Schurman"><option value="Matilde Rinaldi"><option value="Maximo Balza"><option value="Lucia Marcone"><option value="Sandro"><option value="Marina K"><option value="Rocio Lamarque"><option value="Maria Raquel"><option value="Edwin Huang"><option value="Dakota"><option value="Vladimir Povshenko"><option value="Tyler (piloto)"><option value="Jonas Adriaensens"><option value="Kendra"><option value="Guillermo Marcos"><option value="Rita Kalbermatten"><option value="Eirin Lien"><option value="Sarah"><option value="Demi"><option value="Lis"><option value="Mathilde Pinte"><option value="Chris Bladon"><option value="Jim Buttery"><option value="Nick Van Lier"><option value="Audrey"><option value="Florence Rouquette"><option value="Sarah Lafleur"><option value="Kyle Canepa"><option value="Alicia Ortiz"><option value="Joe L"><option value="Jenny Reid"><option value="Teresa Garlock"><option value="Gregory Hall"><option value="Gareth Williams"><option value="Alister Huynh"><option value="Rogerio Urbano Feyh"><option value="Turgut Torkgoz"><option value="Esteban Armayor"><option value="Johan Dettel"><option value="Herve Hamon"><option value="Christine Vermaak"><option value="Lotte Nash"><option value="Lorenzo Alvarez-Roos"><option value="Jorgen Joval Dahl"><option value="Martin Rauh"><option value="Reinhard G"><option value="Mark Mackintosh"><option value="Della Watter"><option value="Juan Retamal"><option value="Constanza Cristi"><option value="Francisco Bedeschi"><option value="Nea Barends"><option value="Carolina Clerici"><option value="Raul Buenaventura"><option value="Francisco Vega"><option value="Milagros Scavarda"><option value="Guillermo Staudt"><option value="Alvaro Gaete"><option value="Sol Branciari"><option value="Martin Banquero"><option value="Daniel Garcia"><option value="Pamela OFarrel"><option value="Ines Amarante"><option value="Lara Robledo"><option value="Pedro Murakami"><option value="Silvana de Martino"><option value="Veronica Castillo"><option value="Victor Cartes"><option value="Federico Pedreros"><option value="Livia Luppo"><option value="Patricia Nakami"><option value="Rodrigo Contesini"><option value="Federico Marsano"><option value="Sandro Araujo"><option value="Mariana Robles"><option value="Romina Conde"><option value="Norberto Borzese"><option value="Pilar Pegoraro"><option value="Debora Maier"><option value="Dani Abadi"><option value="Violeta Ruiz"><option value="Matias Dominguez"><option value="Rita Meyer"><option value="Sergio Quinoni"><option value="Alex Broderick"><option value="Melisa Mantello"><option value="Daniel Rosemberg"><option value="Julian Randle"><option value="Ezequiel Nanyo"><option value="Monica Comabella"><option value="Andrea Hirsch"><option value="Beta Nobile"><option value="Aldo Fenoglio"><option value="Graciela Toso"><option value="Guillermo Moralez"><option value="Patricia Johansen"><option value="Leticia Rouges"><option value="Marina Carballo"><option value="Facundo Soto"><option value="Macarena Alonso"><option value="Elvira Borgaro"><option value="Florencia Aguirre"><option value="Sebastian Vecchi"><option value="Gabriela Alvarez"><option value="Paola Groppo"><option value="Lucia Juarez"><option value="Alejandra Delgado"><option value="Federico Larriera"><option value="Esteban Secchiari"><option value="Marcos Knowles"><option value="Veronica Iriondo"><option value="Julia Ines Apicella"><option value="Felicitas Fragueiro"><option value="Nicolas Joaquin Repetto"><option value="Angel Dure"><option value="Daniel Briff"><option value="Facundo Morales"><option value="Elizabeth Janza"><option value="Marcos Ermini"><option value="Camila Contreras"><option value="Fernan Dubie"><option value="Ernesto Sesin"><option value="Pablo Radice"><option value="Eduardo Rinaldi"><option value="Eugenia Laguna"><option value="Brian Burstein"><option value="Alejo Santos"><option value="Milagros Irastorza"><option value="Marcelo Alexander"><option value="Mariana Mangione"><option value="Rodrigo Rey"><option value="Pablo Estrada"><option value="Ignacio Ronco"><option value="Cecilia Roca"><option value="Lucia Rey"><option value="Candelaria Carreras"><option value="Marie Florio"><option value="Ignacio Luparia"><option value="Nicolas Esquibel"><option value="Javier Menajovsky"><option value="Rodrigo Morales"><option value="Liliana Molas"><option value="Carla Gimbatti"><option value="Ana Maria Mustapic"><option value="Veronica de Estrada"><option value="Antonia Guerena"><option value="Faust Macarena"><option value="Dixon Liliana"><option value="Eichelmann Maria Emilia"><option value="Salguero Silvana"><option value="Almeida Frank"><option value="Lisanti Luis"><option value="Barreiro Anibal"><option value="Pura Aventura Shilito"><option value="Pura Aventura Durbin"></datalist>
+</body>
+</html>
